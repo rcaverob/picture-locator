@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.example.picture_locator.Fragments.LocationListFragment;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -83,7 +85,10 @@ public class MainActivity extends AppCompatActivity
             fragment = initialFragment(1);
         } else if (id == R.id.create_quiz) {
             fragment = initialFragment(2);
+        } else if (id == R.id.archive) {
+            fragment = initialFragment(3);
         }
+
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().replace(R.id.flContent,fragment).commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -97,6 +102,8 @@ public class MainActivity extends AppCompatActivity
                 return new startQuizFragment();
             case 2:
                 return new quizGenerateFragment();
+            case 3:
+                return new LocationListFragment();
             default:
                 return null;
         }
