@@ -43,11 +43,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.soundcloud.android.crop.Crop;
-
-import java.io.File;
-import java.io.IOException;
-
 import static android.app.Activity.RESULT_OK;
 
 
