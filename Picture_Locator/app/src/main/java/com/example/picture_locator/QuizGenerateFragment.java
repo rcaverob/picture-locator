@@ -61,7 +61,6 @@ public class QuizGenerateFragment extends Fragment {
     private Uri mImageUri;
     private ImageView uploadImg;
     private static final int REQUEST_CODE_IMAGE_CAPTURE = 1;
-    private Bitmap rotatedBitmap;
     private StorageReference storage;
     private FirebaseDatabase database;
     private DatabaseReference databaseRef;
@@ -236,6 +235,8 @@ public class QuizGenerateFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
                             downloadUrl = task.getResult();
+                            Log.d("FAB","Sucessfully Uploaded");
+
                             Toast.makeText(getActivity(), "Succesfully Uploaded", Toast.LENGTH_LONG).show();
                             final DatabaseReference newQuiz = databaseRef.push();
                             mDatabaseUsers.addValueEventListener(new ValueEventListener() {
@@ -252,7 +253,6 @@ public class QuizGenerateFragment extends Fragment {
                             });
                         }
                     });
-
                 }
             });
         }
