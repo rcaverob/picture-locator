@@ -169,8 +169,6 @@ public class QuizGenerateFragment extends Fragment {
     }
 
 
-
-
     private void animateFab(){
         if(isFabOpen){
             takeImage.startAnimation(fab_close);
@@ -230,6 +228,7 @@ public class QuizGenerateFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
                             downloadUrl = task.getResult();
+                            Log.d("FAB","Sucessfully Uploaded");
                             Log.d("FAB","Sucessfully Uploaded");
 
                             Toast.makeText(getActivity(), "Succesfully Uploaded", Toast.LENGTH_LONG).show();
