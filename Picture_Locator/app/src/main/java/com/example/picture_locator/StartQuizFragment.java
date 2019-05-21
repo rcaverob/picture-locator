@@ -14,9 +14,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
-public class startQuizFragment extends Fragment {
+public class StartQuizFragment extends Fragment {
 
-    public startQuizFragment() {
+    public StartQuizFragment() {
 
     }
 
