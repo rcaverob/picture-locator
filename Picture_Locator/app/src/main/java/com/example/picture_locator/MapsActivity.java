@@ -118,6 +118,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.addMarker(new MarkerOptions().position(mGoalPosition).icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(mGoalPosition));
 
         // Convert LatLng of Guess and Goal to Location
         Location guess = new Location("");

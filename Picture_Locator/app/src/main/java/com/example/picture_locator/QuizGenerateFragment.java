@@ -6,14 +6,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.ExifInterface;
+//import android.media.ExifInterface;
+import androidx.exifinterface.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -30,7 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +37,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.example.picture_locator.Models.Quizbank;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -52,12 +50,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.soundcloud.android.crop.Crop;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.List;
 import java.util.Locale;
@@ -87,7 +83,7 @@ public class QuizGenerateFragment extends Fragment {
     private Uri downloadUrl;
     private TextView locationName;
     LocationManager locationManager;
-    private double latitude,longtitude;
+    private double mLatitude, mLongitude;
     public QuizGenerateFragment() {
 
     }
@@ -179,7 +175,8 @@ public class QuizGenerateFragment extends Fragment {
         return v;
     }
     private void pickFromLocal(){
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+//      Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
     }
@@ -218,24 +215,40 @@ public class QuizGenerateFragment extends Fragment {
                 Glide.with(getActivity()).load(mImageUri).into(uploadImg);
                 break;
             case GALLERY_REQUEST_CODE:
-                mImageUri = data.getData();
-//                File f = new File(Objects.requireNonNull(mImageUri).getPath());
+                displayImageFromGallery(data);
+        }
+    }
 
-//                LatLng image_location = GeneralUtils.getLatLngFromUri(mImageUri.getPath());
-//                Log.d(TAG, image_location.latitude + " " + image_location.longitude);
+    private void displayImageFromGallery(Intent data) {
+        mImageUri = data.getData();
+        ExifInterface ei = null;
+        try {
+            InputStream imageStream = Objects.requireNonNull(getActivity())
+                    .getContentResolver().openInputStream(mImageUri);
+            if (imageStream != null) {
+                Log.d(TAG, "InputStream is not null");
+                ei = new ExifInterface(imageStream);
+                double arr[] = ei.getLatLong();
+                if (arr != null){
+                    Glide.with(getActivity()).load(mImageUri).into(uploadImg);
+                    Log.d(TAG, "Latitude: "+arr[0] +" Longitude: "+arr[1]);
+                    mLatitude = arr[0];
+                    mLongitude = arr[1];
 
-                uploadImg.setImageURI(mImageUri);
-                Log.d(TAG, "Image path is: "+mImageUri.getPath());
+                    String address = getAddress(mLatitude, mLongitude);
 
-                ExifInterface ei = null;
-                try {
-                    ei = new ExifInterface(mImageUri.getPath());
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    locationName.setText(address);
+                    locationName.setTextSize(22);
+
+                }else {
+                    Toast.makeText(getContext(), "Image must have Geolocation data",
+                            Toast.LENGTH_SHORT).show();
                 }
-                Log.d(TAG, "ExifInterface is Null?: "+ (ei == null? "yes" : "no"));
-
-                break;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -342,7 +355,7 @@ public class QuizGenerateFragment extends Fragment {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     //Quizbank(String userName, String imageUrl, LatLng locationCoord, String addressName)
-                                    com.example.picture_locator.Models.LatLng loation = new com.example.picture_locator.Models.LatLng(latitude,longtitude);
+                                    com.example.picture_locator.Models.LatLng loation = new com.example.picture_locator.Models.LatLng(mLatitude, mLongitude);
 
                                     newQuiz.setValue(new Quizbank(dataSnapshot.child("Username").getValue().toString(),downloadUrl.toString(),loation,locationName.getText().toString()));
 //
@@ -371,8 +384,8 @@ public class QuizGenerateFragment extends Fragment {
             LatLng latlng = new LatLng(location.getLatitude(),location.getLongitude());
             double lat = location.getLatitude();
             double lng = location.getLongitude();
-            latitude = lat;
-            longtitude = lng;
+            mLatitude = lat;
+            mLongitude = lng;
             address = getAddress(lat,lng);
             locationName.setText(address);
             locationName.setTextSize(22);
