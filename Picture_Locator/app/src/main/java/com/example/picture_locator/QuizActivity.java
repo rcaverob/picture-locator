@@ -82,7 +82,7 @@ public class QuizActivity extends AppCompatActivity {
                         String rn="";
                         Set<Integer> randNum = new HashSet<>();
                         Random random  = new Random();
-                        while (randNum.size() <9){
+                        while (randNum.size() <10){
                             randNum.add(random.nextInt(childCount));
                         }
                         int counter = 0;
@@ -100,7 +100,7 @@ public class QuizActivity extends AppCompatActivity {
                             if(childCount > 10){
                                 int currentCounter = 0;
                                 for(DataSnapshot sp:dataSnapshot.getChildren()){
-                                    if(quizCounter > 10){
+                                    if(quizCounter >= 10){
                                         break;
                                     }
                                     if(currentCounter == randArr[quizCounter]){
