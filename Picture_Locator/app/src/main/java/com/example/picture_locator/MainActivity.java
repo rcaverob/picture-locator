@@ -1,6 +1,8 @@
 package com.example.picture_locator;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
@@ -9,13 +11,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.picture_locator.Fragments.LocationListFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +30,19 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                Log.d("FAB","onAuthCalled");
+                if(mAuth.getCurrentUser() == null){
+                    Log.d("FAB","mAuth.getCurrentUser is null");
+                    Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                    startActivity(intent);
+                }
+            }
+        };
+        mAuth.addAuthStateListener(mAuthListener);
 
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().replace(R.id.flContent,new StartQuizFragment()).commit();
@@ -36,6 +56,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
     }
 
     @Override
@@ -82,12 +104,17 @@ public class MainActivity extends AppCompatActivity
             fragment = initialFragment(2);
         } else if (id == R.id.archive) {
             fragment = initialFragment(3);
+        }else if(id == R.id.sign_out){
+            mAuth.signOut();
+            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
-
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().replace(R.id.flContent,fragment).commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 
