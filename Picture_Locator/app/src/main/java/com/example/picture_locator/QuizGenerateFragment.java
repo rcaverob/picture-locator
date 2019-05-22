@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.picture_locator.Models.Quizbank;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,20 +52,35 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import com.soundcloud.android.crop.Crop;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Objects;
+
 
 import static android.app.Activity.RESULT_OK;
 
 
 public class QuizGenerateFragment extends Fragment {
+    private final String TAG = "QuizGenerateFragment";
+
+
     private static final int REQUEST_CROPPING = 11;
     private static final int GALLERY_REQUEST_CODE = 12;
     private boolean isFabOpen = false;
     private static boolean camera_clicked;
-    private FloatingActionButton fab, takeImage, locate;
-    private Animation fab_open, fab_close;
+
+
+    private FloatingActionButton fab,takeImage,locate, pickFromGalleryFab;
+    private Animation fab_open,fab_close;
     private Uri mImageUri;
     private ImageView uploadImg;
     private static final int REQUEST_CODE_IMAGE_CAPTURE = 1;
@@ -97,6 +113,9 @@ public class QuizGenerateFragment extends Fragment {
         fab = v.findViewById(R.id.fab);
         takeImage = v.findViewById(R.id.fab1);
         locate = v.findViewById(R.id.fab2);
+        pickFromGalleryFab = v.findViewById(R.id.fab3);
+
+
         locationName = v.findViewById(R.id.address_textview);
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -155,6 +174,13 @@ public class QuizGenerateFragment extends Fragment {
             }
         });
 
+        pickFromGalleryFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkGalleryPermission();
+            }
+        });
+
 
         return v;
     }
@@ -199,9 +225,23 @@ public class QuizGenerateFragment extends Fragment {
                 break;
             case GALLERY_REQUEST_CODE:
                 mImageUri = data.getData();
-                uploadImg.setImageURI(mImageUri);
-                break;
+//                File f = new File(Objects.requireNonNull(mImageUri).getPath());
 
+//                LatLng image_location = GeneralUtils.getLatLngFromUri(mImageUri.getPath());
+//                Log.d(TAG, image_location.latitude + " " + image_location.longitude);
+
+                uploadImg.setImageURI(mImageUri);
+                Log.d(TAG, "Image path is: "+mImageUri.getPath());
+
+                ExifInterface ei = null;
+                try {
+                    ei = new ExifInterface(mImageUri.getPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "ExifInterface is Null?: "+ (ei == null? "yes" : "no"));
+
+                break;
         }
     }
 
@@ -217,14 +257,18 @@ public class QuizGenerateFragment extends Fragment {
         if(isFabOpen){
             takeImage.startAnimation(fab_close);
             locate.startAnimation(fab_close);
+            pickFromGalleryFab.startAnimation(fab_close);
             takeImage.setClickable(false);
             locate.setClickable(false);
+            pickFromGalleryFab.setClickable(false);
             isFabOpen = false;
         }else{
             takeImage.startAnimation(fab_open);
             locate.startAnimation(fab_open);
+            pickFromGalleryFab.startAnimation(fab_open);
             takeImage.setClickable(true);
             locate.setClickable(true);
+            pickFromGalleryFab.setClickable(true);
             isFabOpen = true;
         }
     }
@@ -240,13 +284,27 @@ public class QuizGenerateFragment extends Fragment {
             takeImage(camera_clicked);
         }
     }
+
+    //Private helper function that asks user for read external storage permission.
+    private void checkGalleryPermission(){
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        } else {
+            pickFromLocal();
+        }
+    }
+
     //Callback function when user handle the check permission dialog.
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == 0 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
             takeImage(camera_clicked);
+        } else if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            pickFromLocal();
         }
         if (grantResults[2] == PackageManager.PERMISSION_DENIED) {
             //Returns true if the user has previously denied the request, and retruns false if
