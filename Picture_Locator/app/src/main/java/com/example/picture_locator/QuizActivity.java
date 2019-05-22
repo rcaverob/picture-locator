@@ -111,6 +111,7 @@ public class QuizActivity extends AppCompatActivity {
                         }
                     });
 
+
                 mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -124,8 +125,6 @@ public class QuizActivity extends AppCompatActivity {
                         adapter = new CustomSwipeAdapter(getApplicationContext(),quizList);
                         viewpager.setAdapter(adapter);
                         viewpager.setOffscreenPageLimit(5);
-                       // Picasso.with(QuizActivity.this).load(quizList.get(0).getImageUrl()).into(quizImage);
-
                     }
 
                     @Override

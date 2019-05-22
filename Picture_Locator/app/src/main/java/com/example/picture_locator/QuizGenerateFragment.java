@@ -291,12 +291,8 @@ public class QuizGenerateFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     //Quizbank(String userName, String imageUrl, LatLng locationCoord, String addressName)
                                     com.example.picture_locator.Models.LatLng loation = new com.example.picture_locator.Models.LatLng(latitude,longtitude);
+                                    newQuiz.setValue(new Quizbank(dataSnapshot.child("Username").getValue().toString(),downloadUrl.toString(),loation,locationName.getText().toString()));
 
-                                    newQuiz.setValue(new Quizbank("userName",downloadUrl.toString(),loation,locationName.getText().toString()));
-//                                    newQuiz.child("id").setValue(System.currentTimeMillis());
-//                                    newQuiz.child("imgUrl").setValue(downloadUrl.toString());
-//                                    newQuiz.child("location").setValue(new LatLng(latitude,longtitude));
-//                                    newQuiz.child("address").setValue(locationName.getText().toString());
                                 }
 
                                 @Override

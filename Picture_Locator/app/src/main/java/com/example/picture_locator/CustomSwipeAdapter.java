@@ -17,7 +17,6 @@ import java.util.List;
 
 public class CustomSwipeAdapter extends PagerAdapter {
 
-    private int[] image_resources = {R.drawable.empty,R.drawable.example};
     private List<Quizbank> quizList ;
     private Context ctx;
     private LayoutInflater layoutInflater;
@@ -43,7 +42,8 @@ public class CustomSwipeAdapter extends PagerAdapter {
         layoutInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View item_view = layoutInflater.inflate(R.layout.activity_quiz, container,false);
         ImageView imageView = item_view.findViewById(R.id.image);
-       // imageView.setImageResource(quizList[position]);
+        imageView.setClipToOutline(true);
+
         Picasso.with(this.ctx).load(quizList.get(position).getImageUrl()).fit().into(imageView);
         container.addView(item_view);
         return item_view;
