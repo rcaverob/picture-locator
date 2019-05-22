@@ -1,8 +1,9 @@
 package com.example.picture_locator.Models;
 
-import com.google.android.gms.maps.model.LatLng;
+
 
 public class Quizbank {
+
     private String userName;
     private String imageUrl;
     private LatLng locationCoord;

@@ -19,7 +19,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:design:28.0.0'
@@ -37,6 +37,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation 'androidx.exifinterface:exifinterface:1.1.0-alpha01'
-
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'it.xabaras.android:viewpagerindicator:1.0'
 }
 apply plugin: 'com.google.gms.google-services'

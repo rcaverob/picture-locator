@@ -34,4 +34,5 @@
         android:paddingTop="0dp"
         android:text="Sign Up"
         android:onClick="onButtonClick"/>
+
 </LinearLayout>
