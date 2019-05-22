@@ -20,5 +20,13 @@
 
     </group>
 
+    <item android:title="Other">
+        <menu>
+            <item
+                android:id="@+id/sign_out"
+                android:title="Sign out" />
+        </menu>
+    </item>
+
 
 </menu>

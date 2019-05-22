@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -44,19 +45,54 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void validUserAccount(){
-        mAuth.signInWithEmailAndPassword(mEmailInput.getText().toString(),mPasswordInput.getText().toString())
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Intent home = new Intent(LoginActivity.this,MainActivity.class);
-                            startActivity(home);
-                            finish();
-                        }else{
-                            Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_LONG).show();
+        if(validEmail() && validPassword()){
+            mAuth.signInWithEmailAndPassword(mEmailInput.getText().toString(),mPasswordInput.getText().toString())
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()){
+                                Intent home = new Intent(LoginActivity.this,MainActivity.class);
+                                startActivity(home);
+                                finish();
+                            }else{
+                                Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_LONG).show();
+                            }
                         }
-                    }
-                });
+                    });
+        }
+    }
+
+
+    private boolean validEmail() {
+        String emailInput = mEmailInput.getText().toString().trim();
+        if (emailInput.isEmpty()) {
+            mEmailInput.setError("Email can not be empty.");
+            return false;
+            //Use Util.Pattern library to check if the email is valid
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()) {
+            mEmailInput.setError("Please enter the valid email.");
+            return false;
+        } else {
+            mEmailInput.setError(null);
+        }
+        return true;
+    }
+
+    //Private helper function that check if user enter a valid password.
+    private boolean validPassword() {
+        String passwordInput = mPasswordInput.getText().toString().trim();
+        //Check if user enter the password or not.
+        if (passwordInput.isEmpty()) {
+            mPasswordInput.setError("Password can not be empty.");
+            return false;
+            //Check if user enter a password with length greater than 3 or not.
+        } else if (passwordInput.length() < 3) {
+            mPasswordInput.setError("Minimum length for the password is 3.");
+            return false;
+        } else {
+            mPasswordInput.setError(null);
+        }
+        return true;
     }
 }
 

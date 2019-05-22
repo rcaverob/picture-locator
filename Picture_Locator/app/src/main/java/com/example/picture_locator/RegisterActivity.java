@@ -16,23 +16,28 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
     private final String TAG = "LoginActivity";
     private FirebaseAuth mAuth;
-    EditText mNameInput, mEmailInput, mPasswordInput, mPhoneInput;
+    EditText  mEmailInput, mPasswordInput, mPhoneInput,mUserNameInput;
     Button registerBtn;
+    private DatabaseReference mDatabase;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        mNameInput = findViewById(R.id.layout_register_name);
         mEmailInput = findViewById(R.id.layout_register_email);
         mPasswordInput = findViewById(R.id.layout_register_password);
         mPhoneInput = findViewById(R.id.layout_register_phone);
+        mUserNameInput = findViewById(R.id.layout_register_userName);
         registerBtn = findViewById(R.id.button_register);
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
     }
 
     public void onButtonClick(View v){
@@ -40,6 +45,11 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void registerUser(){
+        final String username = mUserNameInput.getText().toString();
+        final String email = mEmailInput.getText().toString();
+        final String password = mPasswordInput.getText().toString();
+        final String phone = mPhoneInput.getText().toString();
+
         if(validName()&&validEmail()&&validPassword()&&validPhone()){
             mAuth.createUserWithEmailAndPassword(mEmailInput.getText().toString(), mPasswordInput.getText().toString())
                     .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
@@ -48,6 +58,12 @@ public class RegisterActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Toast.makeText(RegisterActivity.this, "Account registered successfully",
                                         Toast.LENGTH_LONG).show();
+                                String userId = mAuth.getCurrentUser().getUid();
+                                DatabaseReference userDB = mDatabase.child(userId);
+                                userDB.child("Username").setValue(username);
+                                userDB.child("Email").setValue(email);
+                                userDB.child("Password").setValue(password);
+                                userDB.child("Phone").setValue(phone);
 
                             } else {
                                 if (task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -65,13 +81,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     //Private helper function that check if user enter a valid name.
     private boolean validName() {
-        String name = mNameInput.getText().toString().trim();
+        String name = mUserNameInput.getText().toString().trim();
         //Throw error if user didnt enter the name.
         if (name.isEmpty()) {
-            mNameInput.setError("Name field can't be empty.");
+            mUserNameInput.setError("Name field can't be empty.");
             return false;
         } else {
-            mNameInput.setError(null);
+            mUserNameInput.setError(null);
         }
         return true;
     }

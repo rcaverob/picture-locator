@@ -51,9 +51,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.soundcloud.android.crop.Crop;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -71,7 +68,6 @@ public class QuizGenerateFragment extends Fragment {
     private Uri mImageUri;
     private ImageView uploadImg;
     private static final int REQUEST_CODE_IMAGE_CAPTURE = 1;
-    private Bitmap rotatedBitmap;
     private StorageReference storage;
     private FirebaseDatabase database;
     private DatabaseReference databaseRef;
@@ -217,8 +213,6 @@ public class QuizGenerateFragment extends Fragment {
     }
 
 
-
-
     private void animateFab(){
         if(isFabOpen){
             takeImage.startAnimation(fab_close);
@@ -278,7 +272,7 @@ public class QuizGenerateFragment extends Fragment {
 
 
     private void uploadQuiz(){
-        if(mImageUri!=null && !locationName.equals("Location Name")){
+        if(mImageUri!=null && !locationName.getText().toString().equals("Location Name")){
             final StorageReference filePath = storage.child("quiz_imgs").child(mImageUri.getLastPathSegment());
             filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -287,6 +281,9 @@ public class QuizGenerateFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
                             downloadUrl = task.getResult();
+                            Log.d("FAB","Sucessfully Uploaded");
+                            Log.d("FAB","Sucessfully Uploaded");
+
                             Toast.makeText(getActivity(), "Succesfully Uploaded", Toast.LENGTH_LONG).show();
                             final DatabaseReference newQuiz = databaseRef.push();
                             mDatabaseUsers.addValueEventListener(new ValueEventListener() {
@@ -294,11 +291,9 @@ public class QuizGenerateFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     //Quizbank(String userName, String imageUrl, LatLng locationCoord, String addressName)
                                     com.example.picture_locator.Models.LatLng loation = new com.example.picture_locator.Models.LatLng(latitude,longtitude);
-                                    newQuiz.setValue(new Quizbank("userName",downloadUrl.toString(),loation,locationName.getText().toString()));
-//                                    newQuiz.child("id").setValue(System.currentTimeMillis());
-//                                    newQuiz.child("imgUrl").setValue(downloadUrl.toString());
-//                                    newQuiz.child("location").setValue(new LatLng(latitude,longtitude));
-//                                    newQuiz.child("address").setValue(locationName.getText().toString());
+
+                                    newQuiz.setValue(new Quizbank(dataSnapshot.child("Username").getValue().toString(),downloadUrl.toString(),loation,locationName.getText().toString()));
+//
                                 }
 
                                 @Override
@@ -308,7 +303,6 @@ public class QuizGenerateFragment extends Fragment {
                             });
                         }
                     });
-
                 }
             });
         }
@@ -405,5 +399,11 @@ public class QuizGenerateFragment extends Fragment {
         }
     };
 
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("FAB","QuizGenerateFragment onpause");
+        locationManager.removeUpdates(locationListener);
+        locationManager.removeUpdates(locationListenerNW);
+    }
 }
