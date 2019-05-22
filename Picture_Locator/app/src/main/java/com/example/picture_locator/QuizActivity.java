@@ -31,7 +31,6 @@ import java.util.Set;
 public class QuizActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private List<Quizbank> quizList ;
-    private ImageView quizImage;
     private int childCount;
     private int randArr[];
     private int quizCounter;
