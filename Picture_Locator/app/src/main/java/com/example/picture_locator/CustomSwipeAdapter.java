@@ -1,6 +1,7 @@
 package com.example.picture_locator;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.view.PagerAdapter;
@@ -15,6 +16,7 @@ import com.example.picture_locator.Models.Quizbank;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
 
 public class CustomSwipeAdapter extends PagerAdapter {
 
@@ -55,6 +57,8 @@ public class CustomSwipeAdapter extends PagerAdapter {
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((ConstraintLayout)object);
     }
+
+
 
 
 }
