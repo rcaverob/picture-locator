@@ -5,6 +5,8 @@ import android.support.annotation.LongDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.support.annotation.Nullable;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,12 +33,15 @@ import java.util.Set;
 public class QuizActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private List<Quizbank> quizList ;
-    private ImageView quizImage;
     private int childCount;
     private int randArr[];
     private int quizCounter;
     ViewPager viewpager;
     CustomSwipeAdapter adapter;
+    private static final String TAG = "QuizActivity";
+
+    private static final int REQUEST_CODE_SCORE = 0;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +58,17 @@ public class QuizActivity extends AppCompatActivity {
 
     public void answerQuiz(View view) {
         Intent map = new Intent(this,MapsActivity.class);
-        startActivity(map);
+        startActivityForResult(map, REQUEST_CODE_SCORE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE_SCORE && resultCode == RESULT_OK){
+            if (data != null) {
+                double score = data.getDoubleExtra(MapsActivity.EXTRA_MAP_SCORE, 0.0);
+                Log.d(TAG, "onActivityResult: Score is: "+score);
+            }
+        }
     }
 
     private void loadQuizFromFb(){
@@ -63,53 +78,54 @@ public class QuizActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 childCount = (int) dataSnapshot.getChildrenCount();
 //                    //Generating 10 unique randome number;
-                if(childCount>10){
-                    String rn="";
-                    Set<Integer> randNum = new HashSet<>();
-                    Random random  = new Random();
-                    while (randNum.size() <9){
-                        randNum.add(random.nextInt(childCount));
+                    if(childCount>10){
+                        String rn="";
+                        Set<Integer> randNum = new HashSet<>();
+                        Random random  = new Random();
+                        while (randNum.size() <10){
+                            randNum.add(random.nextInt(childCount));
+                        }
+                        int counter = 0;
+                        for (Integer integer:randNum){
+                            randArr[counter] = integer;
+                            rn = rn+" "+integer;
+                            counter++;
+                        }
+                        Log.d("FAB","Generated random numbers: "+rn);
                     }
-                    int counter = 0;
-                    for (Integer integer:randNum){
-                        randArr[counter] = integer;
-                        rn = rn+" "+integer;
-                        counter++;
-                    }
-                    Log.d("FAB","Generated random numbers: "+rn);
-                }
 
-                mDatabase.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(childCount > 10){
-                            int currentCounter = 0;
-                            for(DataSnapshot sp:dataSnapshot.getChildren()){
-                                if(quizCounter > 10){
-                                    break;
+                    mDatabase.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(childCount > 10){
+                                int currentCounter = 0;
+                                for(DataSnapshot sp:dataSnapshot.getChildren()){
+                                    if(quizCounter >= 10){
+                                        break;
+                                    }
+                                    if(currentCounter == randArr[quizCounter]){
+                                        quizList.add(sp.getValue(Quizbank.class));
+                                        quizCounter++;
+                                    }
+                                    currentCounter++;
                                 }
-                                if(currentCounter == randArr[quizCounter]){
+
+                            }
+                            else{
+                                for(DataSnapshot sp:dataSnapshot.getChildren()) {
                                     quizList.add(sp.getValue(Quizbank.class));
                                     quizCounter++;
                                 }
-                                currentCounter++;
                             }
+                            mDatabase.removeEventListener(this);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
-                        else{
-                            for(DataSnapshot sp:dataSnapshot.getChildren()) {
-                                quizList.add(sp.getValue(Quizbank.class));
-                                quizCounter++;
-                            }
-                        }
-                        mDatabase.removeEventListener(this);
-                    }
+                    });
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
 
                 mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -124,8 +140,6 @@ public class QuizActivity extends AppCompatActivity {
                         adapter = new CustomSwipeAdapter(getApplicationContext(),quizList);
                         viewpager.setAdapter(adapter);
                         viewpager.setOffscreenPageLimit(5);
-                        // Picasso.with(QuizActivity.this).load(quizList.get(0).getImageUrl()).into(quizImage);
-
                     }
 
                     @Override
