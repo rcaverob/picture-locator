@@ -31,7 +31,7 @@ public class QuizActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_CODE_SCORE && resultCode == RESULT_OK){
             if (data != null) {
-                double score = data.getDoubleExtra(MapsActivity.EXTRA_MAP_SCORE, 0.0);
+                int score = data.getIntExtra(MapsActivity.EXTRA_MAP_SCORE, -1);
                 Log.d(TAG, "onActivityResult: Score is: "+score);
             }
         }

@@ -25,9 +25,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerOptions mMarker;
 
     private LatLng mGoalPosition;
+    private MenuItem mAnswerButton;
 
     private static final String KEY_MAP_SCORE = "map_score";
     public static final String EXTRA_MAP_SCORE = "map_score";
+
+    boolean answered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.map, menu);
+
+        mAnswerButton = menu.findItem(R.id.menu_map_answer);
         return true;
     }
 
@@ -95,8 +100,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 onBackPressed();
                 return true;
             case R.id.menu_map_answer:
-                LatLng answer = mMarker.getPosition();
-                computeScore(answer);
+                if (! answered && mMarker!= null){
+                    LatLng answer = mMarker.getPosition();
+                    computeScore(answer);
+                }else{
+                    finish();
+                }
+
                 return true;
             default:
                 return  true;
@@ -143,7 +153,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         data.putExtra(EXTRA_MAP_SCORE, score);
         setResult(RESULT_OK, data);
 
-        // TODO: Send answer to Quiz Activity
+        answered = true;
+        mAnswerButton.setTitle("RETURN");
     }
 
 }
