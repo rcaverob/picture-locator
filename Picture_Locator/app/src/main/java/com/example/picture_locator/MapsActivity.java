@@ -1,5 +1,6 @@
 package com.example.picture_locator;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,8 +26,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private LatLng mGoalPosition;
 
+    private static final String KEY_MAP_SCORE = "map_score";
+    public static final String EXTRA_MAP_SCORE = "map_score";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
@@ -34,6 +40,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // Get Extras
+        Bundle extras = getIntent().getExtras();
+
+        // Get the goal position from extras
+        if (extras != null) {
+            double lat = extras.getDouble(getString(R.string.key_latitude), 0.0);
+            double longit = extras.getDouble(getString(R.string.key_longitude), 0.0);
+
+            mGoalPosition = new LatLng(lat, longit);
+        }
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -122,6 +138,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         Toast.makeText(this, "Score: "+score, Toast.LENGTH_SHORT).show();
+
+        Intent data = new Intent();
+        data.putExtra(EXTRA_MAP_SCORE, score);
+        setResult(RESULT_OK, data);
 
         // TODO: Send answer to Quiz Activity
     }
