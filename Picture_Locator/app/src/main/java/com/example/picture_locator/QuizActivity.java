@@ -48,7 +48,6 @@ public class QuizActivity extends AppCompatActivity {
     ViewPager viewpager;
     CustomSwipeAdapter adapter;
 
-    
 
 
     // For Scoring

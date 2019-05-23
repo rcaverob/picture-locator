@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     private final String TAG = "LoginActivity";
     private FirebaseAuth mAuth;
     private EditText mEmailInput,mPasswordInput;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mEmailInput = findViewById(R.id.layout_sign_in_email);
         mPasswordInput = findViewById(R.id.layout_sign_in_password);
+        progressBar = findViewById(R.id.login_progressbar);
 
     }
 
@@ -46,10 +49,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void validUserAccount(){
         if(validEmail() && validPassword()){
+            progressBar.setVisibility(View.VISIBLE);
             mAuth.signInWithEmailAndPassword(mEmailInput.getText().toString(),mPasswordInput.getText().toString())
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            progressBar.setVisibility(View.GONE);
                             if(task.isSuccessful()){
                                 Intent home = new Intent(LoginActivity.this,MainActivity.class);
                                 startActivity(home);
