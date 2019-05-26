@@ -35,6 +35,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.picture_locator.Models.Quizbank;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.example.picture_locator.Models.Quizbank;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -51,12 +53,19 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+import com.soundcloud.android.crop.Crop;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.List;
 import java.util.Locale;
+
 
 import static android.app.Activity.RESULT_OK;
 
@@ -69,6 +78,8 @@ public class QuizGenerateFragment extends Fragment {
     private static final int GALLERY_REQUEST_CODE = 12;
     private boolean isFabOpen = false;
     private static boolean camera_clicked;
+
+
     private FloatingActionButton fab,takeImage,locate, pickFromGalleryFab;
     private Animation fab_open,fab_close;
     private Uri mImageUri;
@@ -358,7 +369,7 @@ public class QuizGenerateFragment extends Fragment {
                                     com.example.picture_locator.Models.LatLng loation = new com.example.picture_locator.Models.LatLng(mLatitude, mLongitude);
 
                                     newQuiz.setValue(new Quizbank(dataSnapshot.child("Username").getValue().toString(),downloadUrl.toString(),loation,locationName.getText().toString()));
-//
+
                                 }
 
                                 @Override

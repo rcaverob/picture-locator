@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class StartQuizFragment extends Fragment {
 
@@ -24,7 +25,7 @@ public class StartQuizFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.activity_start_quiz, container, false);
-        Button dartBtn = v.findViewById(R.id.dartmouthBtn);
+        ImageButton dartBtn = v.findViewById(R.id.dartQuizBtn);
         dartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

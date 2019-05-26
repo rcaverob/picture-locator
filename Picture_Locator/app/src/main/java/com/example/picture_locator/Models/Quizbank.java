@@ -3,6 +3,7 @@ package com.example.picture_locator.Models;
 
 
 public class Quizbank {
+
     private String userName;
     private String imageUrl;
     private LatLng locationCoord;
