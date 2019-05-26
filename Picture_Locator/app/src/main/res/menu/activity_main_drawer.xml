@@ -17,6 +17,11 @@
             android:icon="@drawable/ic_menu_archive"
             android:title="My Location List" />
 
+        <item
+            android:id="@+id/leaderBoard"
+            android:icon="@drawable/ic_assessment_black_24dp"
+            android:title="Leader Board" />
+
 
     </group>
 

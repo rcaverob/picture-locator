@@ -1,11 +1,11 @@
 package com.example.picture_locator;
 
 import android.content.Intent;
-import android.support.annotation.LongDef;
+
+
 import android.support.annotation.Nullable;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
-import android.support.annotation.Nullable;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,12 +15,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.picture_locator.Models.LatLng;
 import com.example.picture_locator.Models.Quizbank;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,8 +38,8 @@ import java.util.Set;
 
 public class QuizActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivity";
-
     private static final int REQUEST_CODE_SCORE = 0;
+
 
     private DatabaseReference mDatabase;
     private List<Quizbank> quizList ;
@@ -49,6 +49,8 @@ public class QuizActivity extends AppCompatActivity {
     ViewPager viewpager;
     CustomSwipeAdapter adapter;
 
+
+
     // For Scoring
     private int mTotal_score = 0;
     private TextView mScoreText;
@@ -56,6 +58,8 @@ public class QuizActivity extends AppCompatActivity {
 
     private MenuItem mFinishButton;
     private Button mAnswerButton;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,13 +132,32 @@ public class QuizActivity extends AppCompatActivity {
     private void finishQuiz() {
         Toast.makeText(this, "Finished Quiz! Final Score is: "+mTotal_score,
                 Toast.LENGTH_LONG).show();
+        updateHighestScore();
         finish();
+
+    }
+
+    private void  updateHighestScore(){
+        FirebaseAuth  mAuth = FirebaseAuth.getInstance();
+        final DatabaseReference mDatabaseUsers  = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
+        mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                int currentHighestScore = dataSnapshot.child("Highest Score").getValue(Integer.class);
+                if (currentHighestScore>-mTotal_score){
+                    mDatabaseUsers.child("Highest Score").setValue(-mTotal_score);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void answerQuiz(View view) {
         Intent mapIntent = new Intent(this,MapsActivity.class);
-
-
         double[] latLngArr = getLocationFromCurrentPicture();
         if (latLngArr != null){
             mapIntent.putExtra(getString(R.string.key_latitude), latLngArr[0]);

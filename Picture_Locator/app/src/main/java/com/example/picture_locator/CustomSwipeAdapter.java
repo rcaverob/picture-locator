@@ -1,7 +1,6 @@
 package com.example.picture_locator;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.view.PagerAdapter;
@@ -9,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.picture_locator.Models.Quizbank;
@@ -31,7 +29,6 @@ public class CustomSwipeAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        Log.d("FAB","quizlist Count:"+quizList.size());
         return quizList.size();
     }
 
@@ -48,6 +45,8 @@ public class CustomSwipeAdapter extends PagerAdapter {
         ImageView imageView = item_view.findViewById(R.id.image);
         imageView.setClipToOutline(true);
         Log.d("FAB","image URL: "+quizList.get(position).getImageUrl());
+        Log.d("FAB","current position: "+position);
+
         Picasso.with(this.ctx).load(quizList.get(position).getImageUrl()).fit().into(imageView);
         container.addView(item_view);
         return item_view;
