@@ -63,6 +63,7 @@ public class LeaderBoardFragment extends Fragment {
         mFireDatabase.orderByChild("Highest Score").limitToFirst(20).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                users.clear();
                 for(DataSnapshot obj:dataSnapshot.getChildren()){
                     //String userName, String rank, int scores, String uri
                     Log.d("SORT","HS: "+obj.child("Highest Score").getValue().toString());
