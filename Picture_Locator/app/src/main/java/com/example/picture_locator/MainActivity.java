@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.picture_locator.Fragments.LeaderBoardFragment;
 import com.example.picture_locator.Fragments.LocationListFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity
                     Log.d("FAB","mAuth.getCurrentUser is null");
                     Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                     startActivity(intent);
+                    finish();
                 }
                 else{
                     mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
@@ -141,7 +143,9 @@ public class MainActivity extends AppCompatActivity
             fragment = initialFragment(2);
         } else if (id == R.id.archive) {
             fragment = initialFragment(3);
-        }else if(id == R.id.sign_out){
+        }else if (id == R.id.leaderBoard) {
+            fragment = initialFragment(4);
+        } else if(id == R.id.sign_out){
             mAuth.signOut();
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -165,6 +169,8 @@ public class MainActivity extends AppCompatActivity
                 return new QuizGenerateFragment();
             case 3:
                 return new LocationListFragment();
+            case 4:
+                return new LeaderBoardFragment();
             default:
                 return null;
         }

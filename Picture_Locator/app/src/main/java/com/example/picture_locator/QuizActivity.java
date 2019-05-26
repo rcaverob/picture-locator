@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.picture_locator.Models.LatLng;
 import com.example.picture_locator.Models.Quizbank;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,6 +58,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private MenuItem mFinishButton;
     private Button mAnswerButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,13 +132,32 @@ public class QuizActivity extends AppCompatActivity {
     private void finishQuiz() {
         Toast.makeText(this, "Finished Quiz! Final Score is: "+mTotal_score,
                 Toast.LENGTH_LONG).show();
+        updateHighestScore();
         finish();
+
+    }
+
+    private void  updateHighestScore(){
+        FirebaseAuth  mAuth = FirebaseAuth.getInstance();
+        final DatabaseReference mDatabaseUsers  = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
+        mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                int currentHighestScore = dataSnapshot.child("Highest Score").getValue(Integer.class);
+                if (currentHighestScore>-mTotal_score){
+                    mDatabaseUsers.child("Highest Score").setValue(-mTotal_score);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void answerQuiz(View view) {
         Intent mapIntent = new Intent(this,MapsActivity.class);
-
-
         double[] latLngArr = getLocationFromCurrentPicture();
         if (latLngArr != null){
             mapIntent.putExtra(getString(R.string.key_latitude), latLngArr[0]);
