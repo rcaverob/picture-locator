@@ -55,23 +55,25 @@ public class StartQuizFragment extends Fragment {
     }
 
     private void loadUserInfo(){
-        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
-        mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                scores.setText(Integer.toString(-dataSnapshot.child("Highest Score").getValue(Integer.class)));
-                String profileImgUri = dataSnapshot.child("Profile Image").getValue(String.class);
-                if(!profileImgUri.equals("Default")){
-                    Picasso.with(getContext()).load(profileImgUri).fit().into(profileImg);
+        if(mAuth.getCurrentUser()!=null){
+            Log.d("FB","mAuth is not null");
+            mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
+            mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    scores.setText(Integer.toString(-dataSnapshot.child("Highest Score").getValue(Integer.class)));
+                    String profileImgUri = dataSnapshot.child("Profile Image").getValue(String.class);
+                    if(!profileImgUri.equals("Default")){
+                        Picasso.with(getContext()).load(profileImgUri).fit().into(profileImg);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
 }

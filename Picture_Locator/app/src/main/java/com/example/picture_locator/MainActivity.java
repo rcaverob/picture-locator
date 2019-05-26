@@ -49,8 +49,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().replace(R.id.flContent,new StartQuizFragment()).commit();
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -65,7 +64,8 @@ public class MainActivity extends AppCompatActivity
         mUserInput = headerView.findViewById(R.id.nav_username);
         mEmailInput = headerView.findViewById(R.id.nav_email);
         profileImg = headerView.findViewById(R.id.nav_profile);
-
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction().replace(R.id.flContent,new StartQuizFragment()).commit();
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -78,10 +78,12 @@ public class MainActivity extends AppCompatActivity
                     finish();
                 }
                 else{
+
                     mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
                     mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
 
                             mUserInput.setText(dataSnapshot.child("Username").getValue(String.class));
                             mEmailInput.setText(dataSnapshot.child("Email").getValue(String.class));
@@ -100,6 +102,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         };
+
         mAuth.addAuthStateListener(mAuthListener);
 
         mUserInput.setText("adb");
