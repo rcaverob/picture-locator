@@ -25,9 +25,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MarkerOptions mMarker;
 
     private LatLng mGoalPosition;
+    private MenuItem mAnswerButton;
 
     private static final String KEY_MAP_SCORE = "map_score";
     public static final String EXTRA_MAP_SCORE = "map_score";
+
+    boolean answered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,18 +69,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                mMap.clear();
-                mMarker = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(
-                        BitmapDescriptorFactory.HUE_RED));
-                mMap.addMarker(mMarker);
+                if (!answered){
+                    mMap.clear();
+                    mMarker = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(
+                            BitmapDescriptorFactory.HUE_RED));
+                    mMap.addMarker(mMarker);
+                }
             }
         });
 
         // Add a marker in Dartmouth and move the camera
         LatLng dartmouth = new LatLng(43.7033, -72.2885);
 
-        // TODO: Get Real Goal Position
-        mGoalPosition=dartmouth;
+//      mGoalPosition=dartmouth;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(dartmouth, (float)16.5));
     }
 
@@ -85,6 +89,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.map, menu);
+
+        mAnswerButton = menu.findItem(R.id.menu_map_answer);
         return true;
     }
 
@@ -95,8 +101,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 onBackPressed();
                 return true;
             case R.id.menu_map_answer:
-                LatLng answer = mMarker.getPosition();
-                computeScore(answer);
+                if (answered){
+                    finish();
+                }else if (mMarker != null){
+                    LatLng answer = mMarker.getPosition();
+                    computeScore(answer);
+                }
                 return true;
             default:
                 return  true;
@@ -108,7 +118,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.addMarker(new MarkerOptions().position(mGoalPosition).icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
-
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(mGoalPosition));
 
         // Convert LatLng of Guess and Goal to Location
         Location guess = new Location("");
@@ -143,7 +153,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         data.putExtra(EXTRA_MAP_SCORE, score);
         setResult(RESULT_OK, data);
 
-        // TODO: Send answer to Quiz Activity
+        answered = true;
+        mAnswerButton.setTitle("RETURN");
     }
 
 }

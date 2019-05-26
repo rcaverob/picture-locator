@@ -8,13 +8,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.picture_locator.Models.Quizbank;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
 
 public class CustomSwipeAdapter extends PagerAdapter {
 
@@ -29,7 +29,6 @@ public class CustomSwipeAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        Log.d("FAB","quizlist Count:"+quizList.size());
         return quizList.size();
     }
 
@@ -46,6 +45,8 @@ public class CustomSwipeAdapter extends PagerAdapter {
         ImageView imageView = item_view.findViewById(R.id.image);
         imageView.setClipToOutline(true);
         Log.d("FAB","image URL: "+quizList.get(position).getImageUrl());
+        Log.d("FAB","current position: "+position);
+
         Picasso.with(this.ctx).load(quizList.get(position).getImageUrl()).fit().into(imageView);
         container.addView(item_view);
         return item_view;
@@ -55,6 +56,8 @@ public class CustomSwipeAdapter extends PagerAdapter {
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((ConstraintLayout)object);
     }
+
+
 
 
 }

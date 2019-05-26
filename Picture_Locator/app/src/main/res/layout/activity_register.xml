@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:orientation="vertical"
+    android:background="@drawable/start_quiz"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/profile_img"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_rounded"
+        android:onClick="selectProfileImg"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/user_default_icon" />
 
     <EditText
         android:id="@+id/layout_register_email"

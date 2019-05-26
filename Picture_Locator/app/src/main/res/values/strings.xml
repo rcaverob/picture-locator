@@ -28,4 +28,5 @@
     <string name="menu_answer">Answer</string>
     <string name="key_latitude">keyLat</string>
     <string name="key_longitude">keyLong</string>
+    <string name="initial_score">SCORE: 0</string>
 </resources>

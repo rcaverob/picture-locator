@@ -1,5 +1,7 @@
 package com.example.picture_locator;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.picture_locator.Fragments.LeaderBoardFragment;
 import com.example.picture_locator.Fragments.LocationListFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,6 +38,7 @@ public class MainActivity extends AppCompatActivity
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
 
+    @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         mUserInput = headerView.findViewById(R.id.nav_username);
         mEmailInput = headerView.findViewById(R.id.nav_email);
+        profileImg = headerView.findViewById(R.id.nav_profile);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -69,6 +75,7 @@ public class MainActivity extends AppCompatActivity
                     Log.d("FAB","mAuth.getCurrentUser is null");
                     Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                     startActivity(intent);
+                    finish();
                 }
                 else{
                     mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
@@ -78,6 +85,10 @@ public class MainActivity extends AppCompatActivity
 
                             mUserInput.setText(dataSnapshot.child("Username").getValue(String.class));
                             mEmailInput.setText(dataSnapshot.child("Email").getValue(String.class));
+                            String profileImgUri = dataSnapshot.child("Profile Image").getValue(String.class);
+                            if(!profileImgUri.equals("Default")){
+                                Picasso.with(getApplicationContext()).load(profileImgUri).fit().into(profileImg);
+                            }
                         }
 
                         @Override
@@ -140,7 +151,9 @@ public class MainActivity extends AppCompatActivity
             fragment = initialFragment(2);
         } else if (id == R.id.archive) {
             fragment = initialFragment(3);
-        }else if(id == R.id.sign_out){
+        }else if (id == R.id.leaderBoard) {
+            fragment = initialFragment(4);
+        } else if(id == R.id.sign_out){
             mAuth.signOut();
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -164,6 +177,8 @@ public class MainActivity extends AppCompatActivity
                 return new QuizGenerateFragment();
             case 3:
                 return new LocationListFragment();
+            case 4:
+                return new LeaderBoardFragment();
             default:
                 return null;
         }

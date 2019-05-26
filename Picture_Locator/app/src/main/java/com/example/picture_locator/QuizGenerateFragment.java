@@ -13,7 +13,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.ExifInterface;
+
+import androidx.exifinterface.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -30,16 +31,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
 import com.example.picture_locator.Models.Quizbank;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,20 +49,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.label.FirebaseVisionImageLabel;
+import com.google.firebase.ml.vision.label.FirebaseVisionImageLabeler;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
-import com.soundcloud.android.crop.Crop;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 
@@ -77,8 +77,6 @@ public class QuizGenerateFragment extends Fragment {
     private static final int GALLERY_REQUEST_CODE = 12;
     private boolean isFabOpen = false;
     private static boolean camera_clicked;
-
-
     private FloatingActionButton fab,takeImage,locate, pickFromGalleryFab;
     private Animation fab_open,fab_close;
     private Uri mImageUri;
@@ -93,7 +91,12 @@ public class QuizGenerateFragment extends Fragment {
     private Uri downloadUrl;
     private TextView locationName;
     LocationManager locationManager;
-    private double latitude,longtitude;
+    private double mLatitude, mLongitude;
+    private  Bitmap imgBitmap;
+    private boolean validImg;
+    private final static String [] IMG_CATERGORIES = {"Building","Plant","Palace","Road",
+            "Event","Leisure","Stadium","Space"};
+    private ProgressBar progressBar;
     public QuizGenerateFragment() {
 
     }
@@ -107,9 +110,11 @@ public class QuizGenerateFragment extends Fragment {
         setHasOptionsMenu(true);
 
         uploadImg = v.findViewById(R.id.quiz_image_id);
+        progressBar = v.findViewById(R.id.upload_progressbar);
+        validImg = false;
         camera_clicked = false;
         checkPermission(false);
-
+        imgBitmap = null;
         fab = v.findViewById(R.id.fab);
         takeImage = v.findViewById(R.id.fab1);
         locate = v.findViewById(R.id.fab2);
@@ -144,6 +149,13 @@ public class QuizGenerateFragment extends Fragment {
             }
         });
 
+        pickFromGalleryFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkGalleryPermission();
+            }
+        });
+
         locate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,18 +186,12 @@ public class QuizGenerateFragment extends Fragment {
             }
         });
 
-        pickFromGalleryFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkGalleryPermission();
-            }
-        });
-
 
         return v;
     }
     private void pickFromLocal(){
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+//      Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
     }
@@ -221,27 +227,57 @@ public class QuizGenerateFragment extends Fragment {
         switch (requestCode) {
 
             case REQUEST_CODE_IMAGE_CAPTURE:
-                Glide.with(getActivity()).load(mImageUri).into(uploadImg);
-                break;
-            case GALLERY_REQUEST_CODE:
-                mImageUri = data.getData();
-//                File f = new File(Objects.requireNonNull(mImageUri).getPath());
-
-//                LatLng image_location = GeneralUtils.getLatLngFromUri(mImageUri.getPath());
-//                Log.d(TAG, image_location.latitude + " " + image_location.longitude);
-
-                uploadImg.setImageURI(mImageUri);
-                Log.d(TAG, "Image path is: "+mImageUri.getPath());
-
-                ExifInterface ei = null;
+                Picasso.with(getActivity()).load(mImageUri).fit().into(uploadImg);
+//                Glide.with(getActivity()).load(mImageUri).into(uploadImg);
                 try {
-                    ei = new ExifInterface(mImageUri.getPath());
+                    imgBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Log.d(TAG, "ExifInterface is Null?: "+ (ei == null? "yes" : "no"));
-
+                getImageCaterogry();
                 break;
+            case GALLERY_REQUEST_CODE:
+                displayImageFromGallery(data);
+                getImageCaterogry();
+        }
+    }
+
+    private void displayImageFromGallery(Intent data) {
+        mImageUri = data.getData();
+        try {
+            imgBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ExifInterface ei = null;
+        try {
+            InputStream imageStream = Objects.requireNonNull(getActivity())
+                    .getContentResolver().openInputStream(mImageUri);
+            if (imageStream != null) {
+                Log.d(TAG, "InputStream is not null");
+                ei = new ExifInterface(imageStream);
+                double arr[] = ei.getLatLong();
+                if (arr != null){
+                    Picasso.with(getActivity()).load(mImageUri).fit().into(uploadImg);
+                    Log.d(TAG, "Latitude: "+arr[0] +" Longitude: "+arr[1]);
+                    mLatitude = arr[0];
+                    mLongitude = arr[1];
+
+                    String address = getAddress(mLatitude, mLongitude);
+
+                    locationName.setText(address);
+                    locationName.setTextSize(22);
+
+                }else {
+                    Toast.makeText(getContext(), "Image must have Geolocation data",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -330,27 +366,26 @@ public class QuizGenerateFragment extends Fragment {
 
 
     private void uploadQuiz(){
-        if(mImageUri!=null && !locationName.getText().toString().equals("Location Name")){
+        if(mImageUri!=null && !locationName.getText().toString().equals("Location Name")&& validImg){
+            progressBar.setVisibility(View.VISIBLE);
             final StorageReference filePath = storage.child("quiz_imgs").child(mImageUri.getLastPathSegment());
             filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
                     filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
                             downloadUrl = task.getResult();
-                            Log.d("FAB","Sucessfully Uploaded");
-                            Log.d("FAB","Sucessfully Uploaded");
-
-                            Toast.makeText(getActivity(), "Succesfully Uploaded", Toast.LENGTH_LONG).show();
                             final DatabaseReference newQuiz = databaseRef.push();
                             mDatabaseUsers.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     //Quizbank(String userName, String imageUrl, LatLng locationCoord, String addressName)
-                                    com.example.picture_locator.Models.LatLng loation = new com.example.picture_locator.Models.LatLng(latitude,longtitude);
+                                    com.example.picture_locator.Models.LatLng loation = new com.example.picture_locator.Models.LatLng(mLatitude, mLongitude);
                                     newQuiz.setValue(new Quizbank(dataSnapshot.child("Username").getValue().toString(),downloadUrl.toString(),loation,locationName.getText().toString()));
-
+                                    progressBar.setVisibility(View.GONE);
+                                    Toast.makeText(getActivity(), "Succesfully Uploaded", Toast.LENGTH_LONG).show();
                                 }
 
                                 @Override
@@ -363,8 +398,11 @@ public class QuizGenerateFragment extends Fragment {
                 }
             });
         }
+        else if(validImg == false){
+            Toast.makeText(getActivity(), "Please upload a appropriate picture", Toast.LENGTH_LONG).show();
+        }
         else{
-            Toast.makeText(getActivity(), "Information missing", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Information missing", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -376,8 +414,8 @@ public class QuizGenerateFragment extends Fragment {
             LatLng latlng = new LatLng(location.getLatitude(),location.getLongitude());
             double lat = location.getLatitude();
             double lng = location.getLongitude();
-            latitude = lat;
-            longtitude = lng;
+            mLatitude = lat;
+            mLongitude = lng;
             address = getAddress(lat,lng);
             locationName.setText(address);
             locationName.setTextSize(22);
@@ -463,4 +501,70 @@ public class QuizGenerateFragment extends Fragment {
         locationManager.removeUpdates(locationListener);
         locationManager.removeUpdates(locationListenerNW);
     }
+
+//    private void getImageCaterogry(){
+//        FirebaseVisionObjectDetectorOptions options =
+//                new FirebaseVisionObjectDetectorOptions.Builder()
+//                        .setDetectorMode(FirebaseVisionObjectDetectorOptions.SINGLE_IMAGE_MODE)
+//                        .enableClassification()  // Optional
+//                        .build();
+//        FirebaseVisionObjectDetector objectDetector =
+//                FirebaseVision.getInstance().getOnDeviceObjectDetector(options);
+////        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(imgBitmap);
+//        FirebaseVisionImage image = null;
+//        try{
+//            image = FirebaseVisionImage.fromFilePath(getActivity(),mImageUri);
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        };
+//        objectDetector.processImage(image).addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionObject>>() {
+//            @Override
+//            public void onSuccess(List<FirebaseVisionObject> firebaseVisionObjects) {
+//                Log.d("IMD","image label sucessfully");
+//                Log.d("IMD","image category outside: "+ firebaseVisionObjects.size());
+//                for (FirebaseVisionObject obj:firebaseVisionObjects){
+//                    Log.d("IMD","image category : "+ obj.getClassificationCategory());
+//                }
+//            }
+//        });
+//    }
+
+    private void getImageCaterogry(){
+
+        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(imgBitmap);
+        FirebaseVisionImageLabeler labeler = FirebaseVision.getInstance().getOnDeviceImageLabeler();
+        labeler.processImage(image).addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionImageLabel>>() {
+            @Override
+            public void onSuccess(List<FirebaseVisionImageLabel> firebaseVisionImageLabels) {
+                Log.d("IMD","image label sucessfully");
+                Log.d("IMD","image category outside: "+ firebaseVisionImageLabels.size());
+                for (FirebaseVisionImageLabel label: firebaseVisionImageLabels) {
+                    String text = label.getText();
+                    float confidence = label.getConfidence();
+                    validImg = validCatergory(text,confidence);
+                    Log.d("IMD","valid image: "+ validImg);
+                    if (validImg) break;
+
+                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("IMD","image label fails");
+
+            }
+        });
+    }
+
+    private boolean validCatergory(String type,float confidence){
+        for(int i =0 ; i<IMG_CATERGORIES.length;i++){
+            if(type.equals(IMG_CATERGORIES[i])&&confidence >= 0.7){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
+
