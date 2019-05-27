@@ -3,6 +3,7 @@ package com.example.picture_locator;
 import android.content.Intent;
 
 
+import android.content.res.ColorStateList;
 import android.support.annotation.Nullable;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
@@ -58,7 +59,7 @@ public class QuizActivity extends AppCompatActivity {
     private Set<Integer> mAnsweredItems;
 
     private MenuItem mFinishButton;
-    private ImageView mAnswerButton;
+    private Button mAnswerButton;
 
 
     @Override
@@ -94,8 +95,11 @@ public class QuizActivity extends AppCompatActivity {
                 // Disable the quiz_answer Button on Already Answered Pictures
                 if (mAnsweredItems.contains(i)){
                     mAnswerButton.setEnabled(false);
+                   // mAnswerButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.buttonColorGrey)));
+
                 } else {
                     mAnswerButton.setEnabled(true);
+                    //mAnswerButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.buttonColor)));
                 }
             }
 
