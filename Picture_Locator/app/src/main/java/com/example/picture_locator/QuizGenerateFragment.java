@@ -378,7 +378,7 @@ public class QuizGenerateFragment extends Fragment {
                         public void onComplete(@NonNull Task<Uri> task) {
                             downloadUrl = task.getResult();
                             final DatabaseReference newQuiz = databaseRef.push();
-                            mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+                            mDatabaseUsers.addListenerForSingleValueEvent((new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     //Quizbank(String userName, String imageUrl, LatLng locationCoord, String addressName)
@@ -392,7 +392,7 @@ public class QuizGenerateFragment extends Fragment {
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                 }
-                            });
+                            }));
                         }
                     });
                 }

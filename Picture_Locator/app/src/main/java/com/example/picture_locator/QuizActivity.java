@@ -42,6 +42,8 @@ public class QuizActivity extends AppCompatActivity {
 
 
     private DatabaseReference mDatabase;
+    FirebaseAuth  mAuth;
+
     private List<Quizbank> quizList ;
     private int childCount;
     private int randArr[];
@@ -58,6 +60,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private MenuItem mFinishButton;
     private Button mAnswerButton;
+    private Button mArchiveButton;
 
 
     @Override
@@ -67,10 +70,14 @@ public class QuizActivity extends AppCompatActivity {
 
         viewpager = findViewById(R.id.view_pager);
         mAnswerButton = findViewById(R.id.quiz_answer_id);
+        mArchiveButton = findViewById(R.id.save_location_id);
 
         // Display the back button on the App bar
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //For Firebase
+        mAuth = FirebaseAuth.getInstance();
 
         mAnsweredItems = new HashSet<>();
 
@@ -138,7 +145,6 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void  updateHighestScore(){
-        FirebaseAuth  mAuth = FirebaseAuth.getInstance();
         final DatabaseReference mDatabaseUsers  = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
         mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -166,16 +172,74 @@ public class QuizActivity extends AppCompatActivity {
         }
     }
 
-    private double[] getLocationFromCurrentPicture() {
-        int curr = viewpager.getCurrentItem();
-        Log.d(TAG, "current item is : "+curr);
+    // Archives the current quiz into the current User's personal archive
+    public void archiveQuizItem(View view) {
+        // Get Firebase Database References
+        final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference()
+                .child("Users").child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
+        DatabaseReference userArchiveRef = userRef.child(getString(R.string.archive_title));
+        final DatabaseReference archivedQuiz = userArchiveRef.push();
 
-        Quizbank currentQuiz = quizList.get(curr);
-        if (currentQuiz != null){
-            LatLng location = currentQuiz.getLocationCoord();
-            double lat = location.getLatitude();
-            double longit = location.getLongitude();
-            return new double[] {lat, longit};
+        // Get current Quiz
+        int curr = viewpager.getCurrentItem();
+        final Quizbank currentQuiz = quizList.get(curr);
+
+        if (currentQuiz == null){
+            return;
+        }
+
+        // Archive the quiz only if it hasn't been archived before
+
+        userRef.child("AlreadyArchived").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final Set<Integer> archivedIDs = new HashSet<>();
+                for (DataSnapshot child : dataSnapshot.getChildren()){
+                    String idString = child.getKey();
+                    int idNum = Integer.parseInt(Objects.requireNonNull(idString));
+                    archivedIDs.add(idNum);
+                }
+
+                boolean isAlreadyArchived = archivedIDs.contains(currentQuiz.getImageUrl().hashCode());
+
+                // If it hasn't been archived before, save it to user's personal archive
+                if (!isAlreadyArchived){
+                    archivedQuiz.setValue(currentQuiz, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                            if (databaseError != null) {
+                                System.out.println("Error Archiving Quiz " + databaseError.getMessage());
+                            } else {
+                                userRef.child("AlreadyArchived").child(""+currentQuiz.getImageUrl().hashCode()).setValue(true);
+                                Toast.makeText(QuizActivity.this, "Successfully Archived", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    // If has been archived before, display error message.
+                    Toast.makeText(QuizActivity.this, "Quiz has already been archived before",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private double[] getLocationFromCurrentPicture() {
+        if (viewpager.getChildCount() > 0){
+            int curr = viewpager.getCurrentItem();
+
+            Quizbank currentQuiz = quizList.get(curr);
+            if (currentQuiz != null){
+                LatLng location = currentQuiz.getLocationCoord();
+                double lat = location.getLatitude();
+                double longit = location.getLongitude();
+                return new double[] {lat, longit};
+            }
         }
         return null;
     }
@@ -201,7 +265,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 childCount = (int) dataSnapshot.getChildrenCount();
-//                    //Generating 10 unique randome number;
+//                    //Generating 10 unique random numbers;
                     if(childCount>10){
                         String rn="";
                         Set<Integer> randNum = new HashSet<>();

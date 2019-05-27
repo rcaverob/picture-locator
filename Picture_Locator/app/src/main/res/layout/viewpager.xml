@@ -59,6 +59,7 @@
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
     android:backgroundTint="@color/buttonColor"
+    android:onClick="archiveQuizItem"
     android:text="Archive"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
