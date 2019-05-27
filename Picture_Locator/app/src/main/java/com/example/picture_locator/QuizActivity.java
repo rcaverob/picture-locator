@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +58,7 @@ public class QuizActivity extends AppCompatActivity {
     private Set<Integer> mAnsweredItems;
 
     private MenuItem mFinishButton;
-    private Button mAnswerButton;
+    private ImageView mAnswerButton;
 
 
     @Override
@@ -90,7 +91,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int i) {
                 Log.d(TAG, "onPageSelected: "+i);
-                // Disable the Answer Button on Already Answered Pictures
+                // Disable the quiz_answer Button on Already Answered Pictures
                 if (mAnsweredItems.contains(i)){
                     mAnswerButton.setEnabled(false);
                 } else {

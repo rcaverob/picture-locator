@@ -17,6 +17,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -45,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
     private final String TAG = "LoginActivity";
     private FirebaseAuth mAuth;
     EditText  mEmailInput, mPasswordInput, mPhoneInput,mUserNameInput;
-    Button registerBtn;
+    ImageButton registerBtn;
     private DatabaseReference mDatabase;
     private Uri mImageUri;
     private ImageView mProfileImage;
