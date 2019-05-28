@@ -3,7 +3,6 @@ package com.example.picture_locator;
 import android.content.Intent;
 
 
-import android.content.res.ColorStateList;
 import android.support.annotation.Nullable;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
@@ -16,7 +15,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,14 +41,16 @@ public class QuizActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SCORE = 0;
 
 
-    private DatabaseReference mDatabase;
+    private DatabaseReference mQuizBankReference;
+    FirebaseAuth  mAuth;
+
     private List<Quizbank> quizList ;
     private int childCount;
     private int randArr[];
     private int quizCounter;
     ViewPager viewpager;
     CustomSwipeAdapter adapter;
-
+    String mUsername = "";
 
 
     // For Scoring
@@ -60,6 +60,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private MenuItem mFinishButton;
     private Button mAnswerButton;
+    private Button mArchiveButton;
 
 
     @Override
@@ -69,15 +70,20 @@ public class QuizActivity extends AppCompatActivity {
 
         viewpager = findViewById(R.id.view_pager);
         mAnswerButton = findViewById(R.id.quiz_answer_id);
+        mArchiveButton = findViewById(R.id.save_location_id);
 
         // Display the back button on the App bar
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //For Firebase
+        mAuth = FirebaseAuth.getInstance();
+        mUsername = Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName();
+
         mAnsweredItems = new HashSet<>();
 
         mScoreText = findViewById(R.id.viewpager_score);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Quizbank");
+        mQuizBankReference = FirebaseDatabase.getInstance().getReference().child("Quizbank");
 
         quizList = new ArrayList<>();
         randArr = new int[10];
@@ -143,7 +149,6 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void  updateHighestScore(){
-        FirebaseAuth  mAuth = FirebaseAuth.getInstance();
         final DatabaseReference mDatabaseUsers  = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
         mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -162,20 +167,82 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     public void answerQuiz(View view) {
-        Intent mapIntent = new Intent(this,MapsActivity.class);
-        double[] latLngArr = getLocationFromCurrentPicture();
-        if (latLngArr != null){
+        if (viewpager.getChildCount() > 0) {
+            Intent mapIntent = new Intent(this, MapsActivity.class);
+
+            int curr = viewpager.getCurrentItem();
+            Quizbank currentQuiz = quizList.get(curr);
+
+            double[] latLngArr = getLocationFromCurrentPicture(currentQuiz);
             mapIntent.putExtra(getString(R.string.key_latitude), latLngArr[0]);
             mapIntent.putExtra(getString(R.string.key_longitude), latLngArr[1]);
+//            String quizKey = quizList.get(viewpager.getCurrentItem()).getImageUrl().hashCode() + "";
+//            mapIntent.putExtra(getString(R.string.key_quiz_key), quizKey);
+            mapIntent.putExtra(getString(R.string.key_guess_users), currentQuiz.getUsernamesAnswered());
+            mapIntent.putExtra(getString(R.string.key_guess_coords), currentQuiz.getLocationsAnswered());
+
             startActivityForResult(mapIntent, REQUEST_CODE_SCORE);
         }
     }
 
-    private double[] getLocationFromCurrentPicture() {
-        int curr = viewpager.getCurrentItem();
-        Log.d(TAG, "current item is : "+curr);
+    // Archives the current quiz into the current User's personal archive
+    public void archiveQuizItem(View view) {
+        // Get Firebase Database References
+        final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference()
+                .child("Users").child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
+        DatabaseReference userArchiveRef = userRef.child(getString(R.string.archive_title));
+        final DatabaseReference archivedQuiz = userArchiveRef.push();
 
-        Quizbank currentQuiz = quizList.get(curr);
+        // Get current Quiz
+        int curr = viewpager.getCurrentItem();
+        final Quizbank currentQuiz = quizList.get(curr);
+
+        if (currentQuiz == null){
+            return;
+        }
+
+        // Archive the quiz only if it hasn't been archived before
+
+        userRef.child("AlreadyArchived").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final Set<Integer> archivedIDs = new HashSet<>();
+                for (DataSnapshot child : dataSnapshot.getChildren()){
+                    String idString = child.getKey();
+                    int idNum = Integer.parseInt(Objects.requireNonNull(idString));
+                    archivedIDs.add(idNum);
+                }
+
+                boolean isAlreadyArchived = archivedIDs.contains(currentQuiz.getImageUrl().hashCode());
+
+                // If it hasn't been archived before, save it to user's personal archive
+                if (!isAlreadyArchived){
+                    archivedQuiz.setValue(currentQuiz, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                            if (databaseError != null) {
+                                System.out.println("Error Archiving Quiz " + databaseError.getMessage());
+                            } else {
+                                userRef.child("AlreadyArchived").child(""+currentQuiz.getImageUrl().hashCode()).setValue(true);
+                                Toast.makeText(QuizActivity.this, "Successfully Archived", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    // If has been archived before, display error message.
+                    Toast.makeText(QuizActivity.this, "Quiz has already been archived before",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private double[] getLocationFromCurrentPicture(Quizbank currentQuiz) {
         if (currentQuiz != null){
             LatLng location = currentQuiz.getLocationCoord();
             double lat = location.getLatitude();
@@ -190,23 +257,35 @@ public class QuizActivity extends AppCompatActivity {
         Log.d(TAG, "onActivityResult: Called");
         if (requestCode == REQUEST_CODE_SCORE && resultCode == RESULT_OK){
             if (data != null) {
-                int score = data.getIntExtra(MapsActivity.EXTRA_MAP_SCORE, -1);
+                int curr_num = viewpager.getCurrentItem();
+
+                // Update Score
+                int score = data.getIntExtra(MapsActivity.EXTRA_SCORE, -1);
+                Log.d(TAG, "onActivityResult: Received Score :"+score);
+
                 mTotal_score += score;
                 mScoreText.setText(MessageFormat.format("Score : {0}", mTotal_score));
                 Log.d(TAG, "onActivityResult: Score is: "+score);
-                mAnsweredItems.add(viewpager.getCurrentItem());
+                mAnsweredItems.add(curr_num);
                 mAnswerButton.setEnabled(false);
+
+                // Add guess location to QuizBank
+                double[] guess = data.getDoubleArrayExtra(MapsActivity.EXTRA_GUESS_LOCATION);
+                Quizbank quiz = quizList.get(curr_num);
+                quiz.addGuess(mUsername, new com.google.android.gms.maps.model.LatLng(guess[0], guess[1]));
+                mQuizBankReference.child(""+quiz.getImageUrl().hashCode()).setValue(quiz);
+
             }
         }
     }
 
     private void loadQuizFromFb(){
 
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        mQuizBankReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 childCount = (int) dataSnapshot.getChildrenCount();
-//                    //Generating 10 unique randome number;
+//                    //Generating 10 unique random numbers;
                     if(childCount>10){
                         String rn="";
                         Set<Integer> randNum = new HashSet<>();
@@ -223,7 +302,7 @@ public class QuizActivity extends AppCompatActivity {
                         Log.d("FAB","Generated random numbers: "+rn);
                     }
 
-                    mDatabase.addValueEventListener(new ValueEventListener() {
+                    mQuizBankReference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if(childCount > 10){
@@ -246,7 +325,7 @@ public class QuizActivity extends AppCompatActivity {
                                     quizCounter++;
                                 }
                             }
-                            mDatabase.removeEventListener(this);
+                            mQuizBankReference.removeEventListener(this);
                         }
 
                         @Override
@@ -256,7 +335,7 @@ public class QuizActivity extends AppCompatActivity {
                     });
 
 
-                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                mQuizBankReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Log.d("FAB","Finish loading: "+quizList.size());

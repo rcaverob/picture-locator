@@ -1,6 +1,8 @@
 package com.example.picture_locator.Models;
 
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class Quizbank {
 
@@ -8,6 +10,8 @@ public class Quizbank {
     private String imageUrl;
     private LatLng locationCoord;
     private String addressName;
+    private String locationsAnswered;
+    private String usernamesAnswered;
 
     public Quizbank() {
     }
@@ -17,6 +21,25 @@ public class Quizbank {
         this.imageUrl = imageUrl;
         this.locationCoord = locationCoord;
         this.addressName = addressName;
+
+        this.locationsAnswered = "";
+        this.usernamesAnswered = "";
+    }
+
+    public String getLocationsAnswered() {
+        return locationsAnswered;
+    }
+
+    public void setLocationsAnswered(String locationsAnswered) {
+        this.locationsAnswered = locationsAnswered;
+    }
+
+    public String getUsernamesAnswered() {
+        return usernamesAnswered;
+    }
+
+    public void setUsernamesAnswered(String usernamesAnswered) {
+        this.usernamesAnswered = usernamesAnswered;
     }
 
     public String getUserName() {
@@ -50,4 +73,10 @@ public class Quizbank {
     public void setAddressName(String addressName) {
         this.addressName = addressName;
     }
+
+    public void addGuess(String userName, com.google.android.gms.maps.model.LatLng coords){
+        usernamesAnswered += userName + " ";
+        locationsAnswered += (coords.latitude+" "+coords.longitude+ " ");
+    }
+
 }

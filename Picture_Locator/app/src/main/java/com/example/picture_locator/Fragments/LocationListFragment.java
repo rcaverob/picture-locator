@@ -11,7 +11,14 @@ import android.view.ViewGroup;
 
 import com.example.picture_locator.Adapters.LocationListAdapter;
 import com.example.picture_locator.Models.QuizItem;
+import com.example.picture_locator.Models.Quizbank;
 import com.example.picture_locator.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +28,12 @@ import java.util.Objects;
 public class LocationListFragment extends ListFragment {
     private final String TAG = "LocationListFragment";
     private LocationListAdapter mAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -42,12 +55,27 @@ public class LocationListFragment extends ListFragment {
         mAdapter= new LocationListAdapter(Objects.requireNonNull(getContext()), R.layout.location_list_item);
         setListAdapter(mAdapter);
 
-        List<QuizItem> items = new ArrayList<>();
-        for (int i = 0; i < 10; i ++){
-            items.add(new QuizItem("Address"+i));
-        }
-        mAdapter.addAll(items);
+        // Get Firebase Database Reference to User's personal archive
+        DatabaseReference userArchiveRef = FirebaseDatabase.getInstance().getReference()
+                .child("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance()
+                        .getCurrentUser()).getUid()).child(getString(R.string.archive_title));
 
+        // Get all Quizzes from the Archive
+        userArchiveRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: child count: "+dataSnapshot.getChildrenCount());
+                for (DataSnapshot child : dataSnapshot.getChildren()){
+                    Quizbank quiz = child.getValue(Quizbank.class);
+                    mAdapter.add(quiz);
+                    Log.d(TAG, "onDataChange: Found Quiz: "+quiz.getUserName());
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        mAdapter.notifyDataSetChanged();
     }
 
 }

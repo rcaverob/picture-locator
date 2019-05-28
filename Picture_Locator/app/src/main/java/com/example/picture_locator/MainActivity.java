@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity
                 if(mAuth.getCurrentUser() == null){
                     Log.d("FAB","mAuth.getCurrentUser is null");
                     Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
                 }
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity
                             mUserInput.setText(dataSnapshot.child("Username").getValue(String.class));
                             mEmailInput.setText(dataSnapshot.child("Email").getValue(String.class));
                             String profileImgUri = dataSnapshot.child("Profile Image").getValue(String.class);
-                            if(!profileImgUri.equals("Default")){
+                            if(profileImgUri != null && !profileImgUri.equals("Default")){
                                 Picasso.with(getApplicationContext()).load(profileImgUri).fit().into(profileImg);
                             }
                         }
@@ -97,6 +98,13 @@ public class MainActivity extends AppCompatActivity
         };
 
         mAuth.addAuthStateListener(mAuthListener);
+
+        if(mAuth.getCurrentUser() == null){
+            Log.d("FAB","mAuth.getCurrentUser is null");
+            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         mUserInput.setText("adb");
 

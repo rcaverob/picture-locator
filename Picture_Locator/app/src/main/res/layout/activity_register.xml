@@ -116,6 +116,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_register_phone"
         app:layout_constraintVertical_bias="0.197"
+        android:onClick="onButtonClick"
          />
 
 </android.support.constraint.ConstraintLayout>

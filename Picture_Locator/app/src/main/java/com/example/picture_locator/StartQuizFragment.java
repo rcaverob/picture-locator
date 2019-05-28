@@ -49,7 +49,6 @@ public class StartQuizFragment extends Fragment {
             }
         });
 
-        loadUserInfo();
 
         return v;
     }
@@ -76,4 +75,9 @@ public class StartQuizFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadUserInfo();
+    }
 }

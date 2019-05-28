@@ -3,6 +3,7 @@ package com.example.picture_locator.Adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.picture_locator.Models.QuizItem;
+import com.example.picture_locator.Models.Quizbank;
 import com.example.picture_locator.R;
+import com.squareup.picasso.Picasso;
 
-public class LocationListAdapter extends ArrayAdapter<QuizItem> {
+public class LocationListAdapter extends ArrayAdapter<Quizbank> {
     private Context mContext;
+    private final String TAG = "LocationListAdapter";
 
     // Adapter to be used for the ListView in LocationList Fragment
     public LocationListAdapter(@NonNull Context context, int resource) {
@@ -25,6 +29,7 @@ public class LocationListAdapter extends ArrayAdapter<QuizItem> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        Log.d(TAG, "getView: ");
         // Inflate custom item layout
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = convertView;
@@ -37,10 +42,15 @@ public class LocationListAdapter extends ArrayAdapter<QuizItem> {
         ImageView imageView = view.findViewById(R.id.loc_list_item_img);
 
         // Set values
-        QuizItem item = getItem(position);
+        Quizbank item = getItem(position);
         if (item != null) {
-            addressView.setText(item.getAddress());
-            imageView.setImageDrawable(mContext.getDrawable(R.drawable.photo_square));
+            addressView.setText(item.getAddressName());
+            Log.d(TAG, "item Address is: "+item.getAddressName());
+//            imageView.setClipToOutline(true);
+
+            Picasso.with(mContext).load(item.getImageUrl()).fit().into(imageView);
+//            imageView.setImageDrawable(mContext.getDrawable(R.drawable.photo_square));
+//            imageView.setI
         }
         return view;
     }
