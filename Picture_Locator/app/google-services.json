@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "452323421217",
+    "firebase_url": "https://picturelocator-976dd.firebaseio.com",
+    "project_id": "picturelocator-976dd",
+    "storage_bucket": "picturelocator-976dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452323421217:android:6ca70cd5a072eced",
+        "android_client_info": {
+          "package_name": "com.example.picture_locator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "452323421217-pd7umfuhq4t0uheiumkpmgnct08i6tfa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyJiXJM-vSmWaP1RR1SQYsChsAG9x2vyA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "452323421217-pd7umfuhq4t0uheiumkpmgnct08i6tfa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

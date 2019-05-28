@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<instant-run
+    abi="armeabi-v7a,armeabi"
+    api-level="27"
+    build-mode="COLD"
+    density="xhdpi"
+    format="10"
+    plugin-version="3.3.2"
+    timestamp="1558550137227"
+    token="940153282856853586"
+    verifier="COLD_SWAP_REQUESTED" >
+
+    <task
+        name="javac"
+        duration="0" />
+    <task
+        name="instant-run-dex"
+        duration="0" />
+    <task
+        name="instant-run-transform"
+        duration="0" />
+    <task
+        name="verifier"
+        duration="0" />
+
+    <artifact
+        location="C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\build\intermediates\resources\instant-run\debug\resources-debug.apk"
+        type="SPLIT" />
+
+</instant-run>
