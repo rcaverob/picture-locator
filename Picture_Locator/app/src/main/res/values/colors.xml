@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#57A676</color>
     <color name="colorAccent">#D81B60</color>
     <color name="buttonColor">#82CEC4</color>
+    <color name="buttonColorGrey">#9CA09C</color>
     <color name="colorStatusBar">#57A676</color>
     <color name="colorWhite">#F9FCF9</color>
     <color name="colorPrimaryLight">#A6E0BD</color>
