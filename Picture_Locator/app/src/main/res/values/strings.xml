@@ -30,4 +30,8 @@
     <string name="key_longitude">keyLong</string>
     <string name="initial_score">SCORE: 0</string>
     <string name="archive_title">Archive</string>
+    <string name="key_quiz_key">key_quiz_key</string>
+    <string name="key_guess_users">key_guess_users</string>
+    <string name="key_guess_scores">key_guess_scores</string>
+    <string name="key_guess_coords">key_guess_coords</string>
 </resources>

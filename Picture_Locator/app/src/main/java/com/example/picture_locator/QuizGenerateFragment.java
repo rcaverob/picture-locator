@@ -377,22 +377,41 @@ public class QuizGenerateFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
                             downloadUrl = task.getResult();
-                            final DatabaseReference newQuiz = databaseRef.push();
-                            mDatabaseUsers.addListenerForSingleValueEvent((new ValueEventListener() {
+
+                            // Upload Quiz with dowloadUrl hash as key
+                            String quiz_key = ""+downloadUrl.toString().hashCode();
+
+                            com.example.picture_locator.Models.LatLng location = new com.example.picture_locator.Models.LatLng(mLatitude, mLongitude);
+                            Quizbank newQuiz = new Quizbank(mCurrentUser.getDisplayName(), downloadUrl.toString(), location,locationName.getText().toString());
+                            databaseRef.child(quiz_key).setValue(newQuiz).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    //Quizbank(String userName, String imageUrl, LatLng locationCoord, String addressName)
-                                    com.example.picture_locator.Models.LatLng loation = new com.example.picture_locator.Models.LatLng(mLatitude, mLongitude);
-                                    newQuiz.setValue(new Quizbank(dataSnapshot.child("Username").getValue().toString(),downloadUrl.toString(),loation,locationName.getText().toString()));
+                                public void onSuccess(Void aVoid) {
                                     progressBar.setVisibility(View.GONE);
-                                    Toast.makeText(getActivity(), "Succesfully Uploaded", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), "Succesfully Uploaded", Toast.LENGTH_SHORT).show();
                                 }
-
+                            }).addOnFailureListener(new OnFailureListener() {
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "onFailure: Failed uploading quiz");
                                 }
-                            }));
+                            });
+//                            final DatabaseReference newQuiz = databaseRef.push();
+
+//                            mDatabaseUsers.addListenerForSingleValueEvent((new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                    //Quizbank(String userName, String imageUrl, LatLng locationCoord, String addressName)
+//                                    com.example.picture_locator.Models.LatLng loation = new com.example.picture_locator.Models.LatLng(mLatitude, mLongitude);
+//                                    newQuiz.setValue(new Quizbank(dataSnapshot.child("Username").getValue().toString(),downloadUrl.toString(),loation,locationName.getText().toString()));
+//                                    progressBar.setVisibility(View.GONE);
+//                                    Toast.makeText(getActivity(), "Succesfully Uploaded", Toast.LENGTH_LONG).show();
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                }
+//                            }));
                         }
                     });
                 }
