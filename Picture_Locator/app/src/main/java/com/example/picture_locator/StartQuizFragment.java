@@ -80,4 +80,10 @@ public class StartQuizFragment extends Fragment {
         super.onResume();
         loadUserInfo();
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loadUserInfo();
+    }
 }
