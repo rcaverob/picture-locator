@@ -3,6 +3,7 @@ package com.example.picture_locator;
 import android.content.Intent;
 
 
+import android.content.res.ColorStateList;
 import android.support.annotation.Nullable;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
@@ -15,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,11 +92,14 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int i) {
                 Log.d(TAG, "onPageSelected: "+i);
-                // Disable the Answer Button on Already Answered Pictures
+                // Disable the quiz_answer Button on Already Answered Pictures
                 if (mAnsweredItems.contains(i)){
                     mAnswerButton.setEnabled(false);
+                   // mAnswerButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.buttonColorGrey)));
+
                 } else {
                     mAnswerButton.setEnabled(true);
+                    //mAnswerButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.buttonColor)));
                 }
             }
 
