@@ -47,6 +47,7 @@ public class BoardListViewAdapter extends ArrayAdapter {
         userNameInput.setText(userName);
         scoreInput.setText(score);
         rankInput.setText(rank);
+        //Set the user profile image
         if(!profileImgUri.equals("Default")){
             Picasso.with(this.context).load(profileImgUri).fit().into(profileImg);
         }
