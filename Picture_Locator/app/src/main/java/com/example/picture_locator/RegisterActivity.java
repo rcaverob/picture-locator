@@ -212,12 +212,13 @@ public class RegisterActivity extends AppCompatActivity {
         String phone = mPhoneInput.getText().toString().trim();
         if (phone.isEmpty()) {
             mPhoneInput.setError("Phone can't be empty");
+            return false;
         } else if (phone.length() > 11 || phone.length() < 10) {
             mPhoneInput.setError("Not valid phone number.");
+            return false;
         } else {
             mPhoneInput.setError(null);
         }
-
         return true;
     }
 

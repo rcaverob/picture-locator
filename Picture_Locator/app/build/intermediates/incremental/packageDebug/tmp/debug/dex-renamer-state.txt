@@ -1,0 +1,7 @@
+#Tue May 28 22:53:41 EDT 2019
+base.0=C\:\\Users\\rcave\\Desktop\\Main Folders\\U\\19S\\Smartphone Programming\\FinalProject\\pictor_locator\\Picture_Locator\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\out
+path.1=classes.dex
+renamed.1=classes2.dex
+path.0=classes.dex
+renamed.0=classes.dex
+base.1=C\:\\Users\\rcave\\Desktop\\Main Folders\\U\\19S\\Smartphone Programming\\FinalProject\\pictor_locator\\Picture_Locator\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\out

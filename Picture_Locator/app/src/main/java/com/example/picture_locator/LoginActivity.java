@@ -39,10 +39,10 @@ public class LoginActivity extends AppCompatActivity {
         switch (v.getId()){
             case R.id.button_sign_in:
                 validUserAccount();
-                //startActivity(new Intent(this, MainActivity.class));
                 return;
             case R.id.button_sign_up:
                 startActivity(new Intent(this, RegisterActivity.class));
+                finish();
         }
 
     }

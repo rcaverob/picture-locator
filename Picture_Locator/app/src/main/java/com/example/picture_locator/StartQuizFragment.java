@@ -49,7 +49,6 @@ public class StartQuizFragment extends Fragment {
             }
         });
 
-        loadUserInfo();
 
         return v;
     }
@@ -58,7 +57,7 @@ public class StartQuizFragment extends Fragment {
         if(mAuth.getCurrentUser()!=null){
             Log.d("FB","mAuth is not null");
             mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
-            mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            mDatabaseUsers.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     scores.setText(Integer.toString(-dataSnapshot.child("Highest Score").getValue(Integer.class)));
@@ -74,6 +73,13 @@ public class StartQuizFragment extends Fragment {
                 }
             });
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("LIS","onResume called");
+        loadUserInfo();
     }
 
 }
