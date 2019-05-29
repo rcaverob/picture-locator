@@ -23,6 +23,7 @@ public class CustomSwipeAdapter extends PagerAdapter {
     private Context ctx;
     private LayoutInflater layoutInflater;
 
+    //Constructor of the adapter
     public CustomSwipeAdapter(Context ctx,List<Quizbank> quizList ) {
         this.ctx = ctx;
         this.quizList = quizList;
@@ -38,6 +39,7 @@ public class CustomSwipeAdapter extends PagerAdapter {
         return view == (ConstraintLayout)o;
     }
 
+    //Initialzing item for each page in the view pager.
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
@@ -45,19 +47,16 @@ public class CustomSwipeAdapter extends PagerAdapter {
         View item_view = layoutInflater.inflate(R.layout.activity_quiz, container,false);
         ImageView imageView = item_view.findViewById(R.id.image);
         imageView.setClipToOutline(true);
-        Log.d("FAB","image URL: "+quizList.get(position).getImageUrl());
-        Log.d("FAB","current position: "+position);
-
         Picasso.with(this.ctx).load(quizList.get(position).getImageUrl()).fit().into(imageView);
         container.addView(item_view);
         return item_view;
     }
 
+    //Destory the current view after user swipe to the next page.
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((ConstraintLayout)object);
     }
-
 
 
 
