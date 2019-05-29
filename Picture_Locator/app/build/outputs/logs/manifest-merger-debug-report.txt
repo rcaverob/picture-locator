@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-73:12
-INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-73:12
-INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-73:12
-INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-73:12
+ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-79:12
+INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-79:12
+INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-79:12
+INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-79:12
 MERGED from [com.soundcloud.android:android-crop:1.0.1] C:\Users\rcave\.gradle\caches\transforms-2\files-2.1\8fe9fc93d630a83b5cad88f625508322\AndroidManifest.xml:2:1-10:12
 MERGED from [com.google.firebase:firebase-core:16.0.9] C:\Users\rcave\.gradle\caches\transforms-2\files-2.1\f228151bc50abe39f846879e71ebf5f2\AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.firebase:firebase-auth:17.0.0] C:\Users\rcave\.gradle\caches\transforms-2\files-2.1\14de96123c159a8e73ff731f1bafd8a9\AndroidManifest.xml:17:1-42:12
@@ -74,20 +74,20 @@ MERGED from [com.android.support:interpolator:28.0.0] C:\Users\rcave\.gradle\cac
 MERGED from [android.arch.lifecycle:livedata:1.1.1] C:\Users\rcave\.gradle\caches\transforms-2\files-2.1\c63bcf2b1e17e3c99afa35f901471869\AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.lifecycle:livedata-core:1.1.1] C:\Users\rcave\.gradle\caches\transforms-2\files-2.1\aad33588361157b107dc308129efc56b\AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.core:runtime:1.1.1] C:\Users\rcave\.gradle\caches\transforms-2\files-2.1\a79b531c1f41d1f029551bbd71066c4e\AndroidManifest.xml:17:1-22:12
-INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-73:12
-INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-73:12
-INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-73:12
+INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-79:12
+INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-79:12
+INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-79:12
 	package
 		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:3:5-42
 		INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-73:12
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-79:12
 		INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml
 	android:versionCode
 		INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-73:12
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:1-79:12
 		INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:2:11-69
@@ -144,7 +144,7 @@ ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\Fina
 	android:name
 		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:15:22-77
 application
-ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:23:5-71:19
+ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:23:5-77:19
 MERGED from [com.google.firebase:firebase-core:16.0.9] C:\Users\rcave\.gradle\caches\transforms-2\files-2.1\f228151bc50abe39f846879e71ebf5f2\AndroidManifest.xml:7:5-20
 MERGED from [com.google.firebase:firebase-core:16.0.9] C:\Users\rcave\.gradle\caches\transforms-2\files-2.1\f228151bc50abe39f846879e71ebf5f2\AndroidManifest.xml:7:5-20
 MERGED from [com.google.firebase:firebase-auth:17.0.0] C:\Users\rcave\.gradle\caches\transforms-2\files-2.1\14de96123c159a8e73ff731f1bafd8a9\AndroidManifest.xml:23:5-40:19
@@ -254,41 +254,53 @@ ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\Fina
 	android:name
 		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:51:27-74
 activity#com.example.picture_locator.MapsActivity
-ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:54:9-56:59
+ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:54:9-58:51
+	android:screenOrientation
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:58:13-49
 	android:label
 		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:56:13-56
+	android:configChanges
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:57:13-74
 	android:name
 		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:55:13-41
 activity#com.example.picture_locator.QuizActivity
-ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:57:9-61:52
+ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:59:9-63:52
 	android:screenOrientation
-		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:61:13-49
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:63:13-49
 	android:label
-		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:60:13-33
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:62:13-33
 	android:configChanges
-		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:59:13-74
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:61:13-74
 	android:name
-		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:58:13-41
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:60:13-41
 activity#com.example.picture_locator.LoginActivity
-ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:62:9-65:68
+ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:64:9-69:68
+	android:screenOrientation
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:68:13-49
 	android:label
-		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:64:13-45
-	android:theme
-		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:65:13-56
-	android:name
-		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:63:13-42
-activity#com.example.picture_locator.RegisterActivity
-ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:66:9-69:58
-	android:label
-		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:68:13-37
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:66:13-45
+	android:configChanges
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:67:13-74
 	android:theme
 		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:69:13-56
 	android:name
-		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:67:13-45
-activity#com.soundcloud.android.crop.CropImageActivity
-ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:70:9-82
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:65:13-42
+activity#com.example.picture_locator.RegisterActivity
+ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:70:9-75:58
+	android:screenOrientation
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:74:13-49
+	android:label
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:72:13-37
+	android:configChanges
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:73:13-74
+	android:theme
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:75:13-56
 	android:name
-		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:70:19-79
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:71:13-45
+activity#com.soundcloud.android.crop.CropImageActivity
+ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:76:9-82
+	android:name
+		ADDED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml:76:19-79
 uses-sdk
 INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\rcave\Desktop\Main Folders\U\19S\Smartphone Programming\FinalProject\pictor_locator\Picture_Locator\app\src\main\AndroidManifest.xml
