@@ -368,7 +368,7 @@ public class QuizGenerateFragment extends Fragment {
     private void uploadQuiz(){
         if(mImageUri!=null && !locationName.getText().toString().equals("Location Name")&& validImg){
             progressBar.setVisibility(View.VISIBLE);
-            final StorageReference filePath = storage.child("quiz_imgs").child(mImageUri.getLastPathSegment());
+            final StorageReference filePath = storage.child("quiz_imgs").child(mImageUri.getLastPathSegment()+System.currentTimeMillis());
             filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
