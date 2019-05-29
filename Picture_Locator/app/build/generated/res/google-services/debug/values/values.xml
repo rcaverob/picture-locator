@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="default_web_client_id" translatable="false">87440200225-2s088vistobriqu6aanv0b8654lrbb2b.apps.googleusercontent.com</string>
-    <string name="firebase_database_url" translatable="false">https://picture-locator.firebaseio.com</string>
-    <string name="gcm_defaultSenderId" translatable="false">87440200225</string>
-    <string name="google_api_key" translatable="false">AIzaSyBIye1Sy7-NgG1wSNwZnZPOvoXfKIjXHrA</string>
-    <string name="google_app_id" translatable="false">1:87440200225:android:6ca70cd5a072eced</string>
-    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBIye1Sy7-NgG1wSNwZnZPOvoXfKIjXHrA</string>
-    <string name="google_storage_bucket" translatable="false">picture-locator.appspot.com</string>
-    <string name="project_id" translatable="false">picture-locator</string>
+    <string name="default_web_client_id" translatable="false">452323421217-pd7umfuhq4t0uheiumkpmgnct08i6tfa.apps.googleusercontent.com</string>
+    <string name="firebase_database_url" translatable="false">https://picturelocator-976dd.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">452323421217</string>
+    <string name="google_api_key" translatable="false">AIzaSyCyJiXJM-vSmWaP1RR1SQYsChsAG9x2vyA</string>
+    <string name="google_app_id" translatable="false">1:452323421217:android:6ca70cd5a072eced</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCyJiXJM-vSmWaP1RR1SQYsChsAG9x2vyA</string>
+    <string name="google_storage_bucket" translatable="false">picturelocator-976dd.appspot.com</string>
+    <string name="project_id" translatable="false">picturelocator-976dd</string>
 </resources>
