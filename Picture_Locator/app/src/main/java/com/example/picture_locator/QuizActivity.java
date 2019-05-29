@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.picture_locator.Adapters.CustomSwipeAdapter;
 import com.example.picture_locator.Models.LatLng;
 import com.example.picture_locator.Models.Quizbank;
 import com.google.firebase.auth.FirebaseAuth;

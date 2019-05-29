@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\rcave\\Desktop\\Main Folders\\U\\19S\\Smartphone Programming\\FinalProject\\pictor_locator\\Picture_Locator\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-xlarge-v4\\values-xlarge-v4.xml",
+            "outputFile": "C:\\Users\\Yuteng Mei\\Desktop\\CS65FPV1\\Picture_Locator\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-xlarge-v4\\values-xlarge-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\rcave\\.gradle\\caches\\transforms-2\\files-2.1\\81948b62056c108fb108e3a502feafe3\\res\\values-xlarge-v4\\values-xlarge-v4.xml",
+                    "source": "C:\\Users\\Yuteng Mei\\.gradle\\caches\\transforms-2\\files-2.1\\0909fab3ef1252f64b9f523dc3da157d\\res\\values-xlarge-v4\\values-xlarge-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7",
                         "startColumns": "4,4,4,4,4,4",

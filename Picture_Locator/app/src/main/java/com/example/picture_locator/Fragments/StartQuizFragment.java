@@ -1,4 +1,4 @@
-package com.example.picture_locator;
+package com.example.picture_locator.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.picture_locator.QuizActivity;
+import com.example.picture_locator.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,7 +46,7 @@ public class StartQuizFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("TAGP","clicked");
-                Intent dartmouthqQuiz = new Intent(getActivity(),QuizActivity.class);
+                Intent dartmouthqQuiz = new Intent(getActivity(), QuizActivity.class);
                 startActivity(dartmouthqQuiz);
             }
         });

@@ -42,7 +42,6 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             case R.id.button_sign_up:
                 startActivity(new Intent(this, RegisterActivity.class));
-                finish();
         }
 
     }

@@ -128,7 +128,6 @@ public class RegisterActivity extends AppCompatActivity {
                                                     userDB.child("Password").setValue(password);
                                                     userDB.child("Phone").setValue(phone);
                                                     userDB.child("Highest Score").setValue(0);
-
                                                     mAuth.signOut();
                                                 }
                                             });
@@ -146,6 +145,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
                                 Toast.makeText(RegisterActivity.this, "Account registered successfully",
                                         Toast.LENGTH_LONG).show();
+
 
                             } else {
                                 if (task.getException() instanceof FirebaseAuthUserCollisionException) {

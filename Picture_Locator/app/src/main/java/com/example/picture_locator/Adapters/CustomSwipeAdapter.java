@@ -1,4 +1,4 @@
-package com.example.picture_locator;
+package com.example.picture_locator.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.picture_locator.Models.Quizbank;
+import com.example.picture_locator.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

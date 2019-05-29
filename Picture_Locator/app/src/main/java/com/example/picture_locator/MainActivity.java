@@ -1,7 +1,6 @@
 package com.example.picture_locator;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +21,7 @@ import android.widget.TextView;
 
 import com.example.picture_locator.Fragments.LeaderBoardFragment;
 import com.example.picture_locator.Fragments.LocationListFragment;
+import com.example.picture_locator.Fragments.StartQuizFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
