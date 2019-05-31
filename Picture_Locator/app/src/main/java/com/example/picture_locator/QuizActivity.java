@@ -99,11 +99,8 @@ public class QuizActivity extends AppCompatActivity {
                 // Disable the quiz_answer Button on Already Answered Pictures
                 if (mAnsweredItems.contains(i)){
                     mAnswerButton.setEnabled(false);
-                   // mAnswerButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.buttonColorGrey)));
-
                 } else {
                     mAnswerButton.setEnabled(true);
-                    //mAnswerButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.buttonColor)));
                 }
             }
 
