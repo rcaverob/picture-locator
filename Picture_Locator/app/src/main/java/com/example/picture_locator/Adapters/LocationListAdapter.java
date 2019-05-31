@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.picture_locator.Models.QuizItem;
 import com.example.picture_locator.Models.Quizbank;
 import com.example.picture_locator.R;
 import com.squareup.picasso.Picasso;
@@ -46,11 +45,8 @@ public class LocationListAdapter extends ArrayAdapter<Quizbank> {
         if (item != null) {
             addressView.setText(item.getAddressName());
             Log.d(TAG, "item Address is: "+item.getAddressName());
-//            imageView.setClipToOutline(true);
 
             Picasso.with(mContext).load(item.getImageUrl()).fit().into(imageView);
-//            imageView.setImageDrawable(mContext.getDrawable(R.drawable.photo_square));
-//            imageView.setI
         }
         return view;
     }

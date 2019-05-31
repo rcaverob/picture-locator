@@ -243,6 +243,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mAnswerButton.setTitle("RETURN");
     }
 
+    // Gets rank based on distance from target
     private int getRank(double dist) {
         Collections.sort(mDistanceList);
         int rank = 1;
@@ -255,6 +256,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return rank;
     }
 
+    // Adds the markers corresponding to the guesses all users have made in this picture
     private void populateWithGuesses() {
         if (mQuizGuessUsers.isEmpty()){
             return;
@@ -281,6 +283,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    // Returns an appropriate distance string with corresponding units
     private String getDistanceString(double dist) {
         String distUnit = mShortDistanceUnit;
         if(dist > 1000){
