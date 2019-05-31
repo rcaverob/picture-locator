@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.picture_locator.Adapters.CustomSwipeAdapter;
 import com.example.picture_locator.Models.LatLng;
 import com.example.picture_locator.Models.Quizbank;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,9 +59,7 @@ public class QuizActivity extends AppCompatActivity {
     private TextView mScoreText;
     private Set<Integer> mAnsweredItems;
 
-    private MenuItem mFinishButton;
     private Button mAnswerButton;
-    private Button mArchiveButton;
 
 
     @Override
@@ -70,7 +69,6 @@ public class QuizActivity extends AppCompatActivity {
 
         viewpager = findViewById(R.id.view_pager);
         mAnswerButton = findViewById(R.id.quiz_answer_id);
-        mArchiveButton = findViewById(R.id.save_location_id);
 
         // Display the back button on the App bar
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
@@ -101,11 +99,8 @@ public class QuizActivity extends AppCompatActivity {
                 // Disable the quiz_answer Button on Already Answered Pictures
                 if (mAnsweredItems.contains(i)){
                     mAnswerButton.setEnabled(false);
-                   // mAnswerButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.buttonColorGrey)));
-
                 } else {
                     mAnswerButton.setEnabled(true);
-                    //mAnswerButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.buttonColor)));
                 }
             }
 
@@ -121,8 +116,6 @@ public class QuizActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.quiz, menu);
-
-        mFinishButton = menu.findItem(R.id.menu_quiz_finish);
         return true;
     }
 
@@ -176,8 +169,6 @@ public class QuizActivity extends AppCompatActivity {
             double[] latLngArr = getLocationFromCurrentPicture(currentQuiz);
             mapIntent.putExtra(getString(R.string.key_latitude), latLngArr[0]);
             mapIntent.putExtra(getString(R.string.key_longitude), latLngArr[1]);
-//            String quizKey = quizList.get(viewpager.getCurrentItem()).getImageUrl().hashCode() + "";
-//            mapIntent.putExtra(getString(R.string.key_quiz_key), quizKey);
             mapIntent.putExtra(getString(R.string.key_guess_users), currentQuiz.getUsernamesAnswered());
             mapIntent.putExtra(getString(R.string.key_guess_coords), currentQuiz.getLocationsAnswered());
 
@@ -242,6 +233,7 @@ public class QuizActivity extends AppCompatActivity {
         });
     }
 
+    // Returns an array containing the latitude and longitude of the given Quizbank
     private double[] getLocationFromCurrentPicture(Quizbank currentQuiz) {
         if (currentQuiz != null){
             LatLng location = currentQuiz.getLocationCoord();
@@ -252,6 +244,7 @@ public class QuizActivity extends AppCompatActivity {
         return null;
     }
 
+    // Receives information from MapActivity once the user has made a guess
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Log.d(TAG, "onActivityResult: Called");
@@ -279,6 +272,7 @@ public class QuizActivity extends AppCompatActivity {
         }
     }
 
+    // Loads 10 of the Quiz items from the firebase database and adds them to the Swipe Adapter
     private void loadQuizFromFb(){
 
         mQuizBankReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -287,7 +281,7 @@ public class QuizActivity extends AppCompatActivity {
                 childCount = (int) dataSnapshot.getChildrenCount();
 //                    //Generating 10 unique random numbers;
                     if(childCount>10){
-                        String rn="";
+                        StringBuilder rn= new StringBuilder();
                         Set<Integer> randNum = new HashSet<>();
                         Random random  = new Random();
                         while (randNum.size() <10){
@@ -296,7 +290,7 @@ public class QuizActivity extends AppCompatActivity {
                         int counter = 0;
                         for (Integer integer:randNum){
                             randArr[counter] = integer;
-                            rn = rn+" "+integer;
+                            rn.append(" ").append(integer);
                             counter++;
                         }
                         Log.d("FAB","Generated random numbers: "+rn);
@@ -339,11 +333,11 @@ public class QuizActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Log.d("FAB","Finish loading: "+quizList.size());
-                        String resultedQuiz = "";
+                        StringBuilder resultedQuiz = new StringBuilder();
                         for (int i = 0; i<quizList.size();i++){
-                            resultedQuiz = resultedQuiz + " " +quizList.get(i).getUserName();
+                            resultedQuiz.append(" ").append(quizList.get(i).getUserName());
                         }
-                        Log.d("FAB",resultedQuiz);
+                        Log.d("FAB", resultedQuiz.toString());
                         adapter = new CustomSwipeAdapter(getApplicationContext(),quizList);
                         viewpager.setAdapter(adapter);
                         viewpager.setOffscreenPageLimit(5);

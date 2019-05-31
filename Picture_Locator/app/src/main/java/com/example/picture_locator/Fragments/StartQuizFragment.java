@@ -1,4 +1,4 @@
-package com.example.picture_locator;
+package com.example.picture_locator.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.picture_locator.QuizActivity;
+import com.example.picture_locator.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,15 +38,16 @@ public class StartQuizFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.activity_start_quiz, container, false);
+        //Initializing different widgets.
         ImageButton dartBtn = v.findViewById(R.id.dartQuizBtn);
         profileImg = v.findViewById(R.id.quiz_user_image);
         scores = v.findViewById(R.id.quiz_score);
         mAuth = FirebaseAuth.getInstance();
+        //Click listener that starts the quiz activity.
         dartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TAGP","clicked");
-                Intent dartmouthqQuiz = new Intent(getActivity(),QuizActivity.class);
+                Intent dartmouthqQuiz = new Intent(getActivity(), QuizActivity.class);
                 startActivity(dartmouthqQuiz);
             }
         });
@@ -53,10 +56,12 @@ public class StartQuizFragment extends Fragment {
         return v;
     }
 
+    //Helper function that load the user information from firebase.
     private void loadUserInfo(){
+        //Check if current user is null or not
         if(mAuth.getCurrentUser()!=null){
-            Log.d("FB","mAuth is not null");
             mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
+            //Add a listener to the node. Update the highest scores displayed on the UI thread once the value is updated in the firebase.
             mDatabaseUsers.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -66,7 +71,6 @@ public class StartQuizFragment extends Fragment {
                         Picasso.with(getContext()).load(profileImgUri).fit().into(profileImg);
                     }
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -78,7 +82,6 @@ public class StartQuizFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("LIS","onResume called");
         loadUserInfo();
     }
 

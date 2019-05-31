@@ -71,9 +71,6 @@ import static android.app.Activity.RESULT_OK;
 
 public class QuizGenerateFragment extends Fragment {
     private final String TAG = "QuizGenerateFragment";
-
-
-    private static final int REQUEST_CROPPING = 11;
     private static final int GALLERY_REQUEST_CODE = 12;
     private boolean isFabOpen = false;
     private static boolean camera_clicked;
@@ -109,6 +106,7 @@ public class QuizGenerateFragment extends Fragment {
         quizImage.setClipToOutline(true);
         setHasOptionsMenu(true);
 
+        //Initializing different widgets.
         uploadImg = v.findViewById(R.id.quiz_image_id);
         progressBar = v.findViewById(R.id.upload_progressbar);
         validImg = false;
@@ -119,10 +117,7 @@ public class QuizGenerateFragment extends Fragment {
         takeImage = v.findViewById(R.id.fab1);
         locate = v.findViewById(R.id.fab2);
         pickFromGalleryFab = v.findViewById(R.id.fab3);
-
-
         locationName = v.findViewById(R.id.address_textview);
-
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         storage = FirebaseStorage.getInstance().getReference();
         databaseRef = database.getInstance().getReference().child("Quizbank");
@@ -156,11 +151,10 @@ public class QuizGenerateFragment extends Fragment {
             }
         });
 
+        //Fetch user current location after user take a image.
         locate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Log.d("FAB","locate clicked");
                 Criteria criteria = new Criteria();
                 criteria.setAccuracy(Criteria.ACCURACY_FINE);
                 criteria.setPowerRequirement(Criteria.POWER_LOW);
@@ -185,16 +179,17 @@ public class QuizGenerateFragment extends Fragment {
                 locationManager.requestLocationUpdates(provider, 10000, 0, locationListener);
             }
         });
-
-
         return v;
     }
+
+    //Helper function that get image from gallery.
     private void pickFromLocal(){
-//      Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
     }
+
+    //Helper function that start camera intent.
     private void takeImage(boolean start) {
         if (start) {
             //Create a new intent.
@@ -225,10 +220,9 @@ public class QuizGenerateFragment extends Fragment {
             return;
         }
         switch (requestCode) {
-
             case REQUEST_CODE_IMAGE_CAPTURE:
+                //Set the image to the imageview after taking from camera
                 Picasso.with(getActivity()).load(mImageUri).fit().into(uploadImg);
-//                Glide.with(getActivity()).load(mImageUri).into(uploadImg);
                 try {
                     imgBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
                 } catch (IOException e) {
@@ -288,7 +282,7 @@ public class QuizGenerateFragment extends Fragment {
 
     }
 
-
+    //Helper function that handle floating button animation.
     private void animateFab(){
         if(isFabOpen){
             takeImage.startAnimation(fab_close);
@@ -308,8 +302,8 @@ public class QuizGenerateFragment extends Fragment {
             isFabOpen = true;
         }
     }
-    //Private helper function that ask user for camera and write external storage permission.
 
+    //Private helper function that ask user for camera and write external storage permission.
     private void checkPermission(boolean camera_clicked) {
         //Check if permissions were granted.
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
@@ -332,7 +326,6 @@ public class QuizGenerateFragment extends Fragment {
     }
 
     //Callback function when user handle the check permission dialog.
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -364,20 +357,21 @@ public class QuizGenerateFragment extends Fragment {
         }
     }
 
-
+    //Helper functoin that upload quiz image and location to the firebase.
     private void uploadQuiz(){
+        //Check if the image user trying to upload is spam or not.
         if(mImageUri!=null && !locationName.getText().toString().equals("Location Name")&& validImg){
             progressBar.setVisibility(View.VISIBLE);
+            //Upload image file to firebase storage.
             final StorageReference filePath = storage.child("quiz_imgs").child(mImageUri.getLastPathSegment()+System.currentTimeMillis());
             filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                    //Fetch the image uri that just uploaded to firebase storage and store it into the firebase realtime database.
                     filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
                             downloadUrl = task.getResult();
-
                             // Upload Quiz with dowloadUrl hash as key
                             String quiz_key = ""+downloadUrl.toString().hashCode();
 
@@ -395,23 +389,6 @@ public class QuizGenerateFragment extends Fragment {
                                     Log.d(TAG, "onFailure: Failed uploading quiz");
                                 }
                             });
-//                            final DatabaseReference newQuiz = databaseRef.push();
-
-//                            mDatabaseUsers.addListenerForSingleValueEvent((new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                    //Quizbank(String userName, String imageUrl, LatLng locationCoord, String addressName)
-//                                    com.example.picture_locator.Models.LatLng loation = new com.example.picture_locator.Models.LatLng(mLatitude, mLongitude);
-//                                    newQuiz.setValue(new Quizbank(dataSnapshot.child("Username").getValue().toString(),downloadUrl.toString(),loation,locationName.getText().toString()));
-//                                    progressBar.setVisibility(View.GONE);
-//                                    Toast.makeText(getActivity(), "Succesfully Uploaded", Toast.LENGTH_LONG).show();
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                                }
-//                            }));
                         }
                     });
                 }
@@ -425,6 +402,7 @@ public class QuizGenerateFragment extends Fragment {
         }
     }
 
+    //Helper function that fetch the current location .
     private void getCurrentLocation(Location location){
         String latLongString = "N/A";
         String address = "N/A";
@@ -442,6 +420,7 @@ public class QuizGenerateFragment extends Fragment {
         }
     }
 
+    //Helper function that get the address name from latitude and longtitude.
     private String getAddress(double lat, double lng){
         String address = null;
         Geocoder geocode = new Geocoder(getActivity(), Locale.getDefault());
@@ -454,9 +433,7 @@ public class QuizGenerateFragment extends Fragment {
                 StringBuilder sb = new StringBuilder();
                 if(addresses.size()>0){
                     Address ads = addresses.get(0);
-                    Log.d("FAB","GETTING ADDRESS: "+ads.getMaxAddressLineIndex());
                     for (int i = 0; i <= ads.getMaxAddressLineIndex(); i++){
-                        Log.d("FAB","GETTING ADDRESS");
                         sb.append(ads.getAddressLine(i));
                     }
                 }
@@ -469,9 +446,9 @@ public class QuizGenerateFragment extends Fragment {
         return address;
     }
 
+    //Create a GPS location listener
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
-            Log.d("FAB","onLocationChanged()");
             locationManager.removeUpdates(locationListenerNW);
             getCurrentLocation(location);
         }
@@ -521,47 +498,19 @@ public class QuizGenerateFragment extends Fragment {
         locationManager.removeUpdates(locationListenerNW);
     }
 
-//    private void getImageCaterogry(){
-//        FirebaseVisionObjectDetectorOptions options =
-//                new FirebaseVisionObjectDetectorOptions.Builder()
-//                        .setDetectorMode(FirebaseVisionObjectDetectorOptions.SINGLE_IMAGE_MODE)
-//                        .enableClassification()  // Optional
-//                        .build();
-//        FirebaseVisionObjectDetector objectDetector =
-//                FirebaseVision.getInstance().getOnDeviceObjectDetector(options);
-////        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(imgBitmap);
-//        FirebaseVisionImage image = null;
-//        try{
-//            image = FirebaseVisionImage.fromFilePath(getActivity(),mImageUri);
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        };
-//        objectDetector.processImage(image).addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionObject>>() {
-//            @Override
-//            public void onSuccess(List<FirebaseVisionObject> firebaseVisionObjects) {
-//                Log.d("IMD","image label sucessfully");
-//                Log.d("IMD","image category outside: "+ firebaseVisionObjects.size());
-//                for (FirebaseVisionObject obj:firebaseVisionObjects){
-//                    Log.d("IMD","image category : "+ obj.getClassificationCategory());
-//                }
-//            }
-//        });
-//    }
 
+    //Helper function that use Image labeling API from ML kit to determine the image is related to location or places
     private void getImageCaterogry(){
-
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(imgBitmap);
         FirebaseVisionImageLabeler labeler = FirebaseVision.getInstance().getOnDeviceImageLabeler();
         labeler.processImage(image).addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionImageLabel>>() {
             @Override
             public void onSuccess(List<FirebaseVisionImageLabel> firebaseVisionImageLabels) {
-                Log.d("IMD","image label sucessfully");
-                Log.d("IMD","image category outside: "+ firebaseVisionImageLabels.size());
+
                 for (FirebaseVisionImageLabel label: firebaseVisionImageLabels) {
                     String text = label.getText();
                     float confidence = label.getConfidence();
                     validImg = validCatergory(text,confidence);
-                    Log.d("IMD","valid image: "+ validImg);
                     if (validImg) break;
 
                 }
@@ -576,6 +525,7 @@ public class QuizGenerateFragment extends Fragment {
         });
     }
 
+    //Helper function that determine if the image is a valid catergory or not.
     private boolean validCatergory(String type,float confidence){
         for(int i =0 ; i<IMG_CATERGORIES.length;i++){
             if(type.equals(IMG_CATERGORIES[i])&&confidence >= 0.7){

@@ -3,7 +3,6 @@ package com.example.picture_locator;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -12,21 +11,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.picture_locator.Models.Quizbank;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -50,8 +42,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     boolean answered = false;
 
-//    private String mQuizKey;
-//    private Quizbank mQuizBank;
 
     private String mQuizGuessUsers;
     private String mQuizGuessCoords;
@@ -60,7 +50,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     LatLng mDartmouth;
     private boolean isDartmouth = true;
 
-    private String mDistanceUnit = "kms";
+    private String mLongDistanceUnit = "km";
+    private String mShortDistanceUnit = "m";
 
     private List<Double> mDistanceList;
 
@@ -126,7 +117,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         dartLoc.setLongitude(mDartmouth.longitude);
 
         double dist = dartLoc.distanceTo(mGoalLocation);
-        return dist < 1500;
+        return dist < 2000;
     }
 
 
@@ -228,11 +219,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Populate the map with guesses of other users
         populateWithGuesses();
 
-        String distString = String.format(Locale.US, "%.2f", distance) + " "+ mDistanceUnit;
-        int rank = getRank(distance);
+        String distString = getDistanceString(distance);
 
         // Show the distance, score, and rank to the user
         mPostAnswerLayout.setVisibility(View.VISIBLE);
+
+        int rank = getRank(distance);
 
         mDistText.setText(MessageFormat.format("{0}{1}", mDistText.getText(), distString));
         mScoreText.setText(MessageFormat.format("{0}{1}", mScoreText.getText(), score));
@@ -251,6 +243,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mAnswerButton.setTitle("RETURN");
     }
 
+    // Gets rank based on distance from target
     private int getRank(double dist) {
         Collections.sort(mDistanceList);
         int rank = 1;
@@ -263,6 +256,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return rank;
     }
 
+    // Adds the markers corresponding to the guesses all users have made in this picture
     private void populateWithGuesses() {
         if (mQuizGuessUsers.isEmpty()){
             return;
@@ -282,11 +276,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             double dist = loc.distanceTo(mGoalLocation);
             mDistanceList.add(dist);
 
-            String distString = String.format(Locale.US, "%.2f", dist) + " "+ mDistanceUnit;
+            String distString = getDistanceString(dist);
 
             mMap.addMarker(new MarkerOptions().position(coord).icon(BitmapDescriptorFactory
                     .defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).title("Guess from: "+users[i]).snippet("Distance to target: "+distString));
         }
+    }
+
+    // Returns an appropriate distance string with corresponding units
+    private String getDistanceString(double dist) {
+        String distUnit = mShortDistanceUnit;
+        if(dist > 1000){
+            dist = dist/1000;
+            distUnit = mLongDistanceUnit;
+        }
+        return String.format(Locale.US, "%.2f", dist) + " "+ distUnit;
     }
 
 }

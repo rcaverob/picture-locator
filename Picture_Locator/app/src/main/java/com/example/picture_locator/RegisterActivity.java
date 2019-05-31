@@ -58,10 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        //      Display the back button on the App bar
-//        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        //Initializing different widgets.
         mEmailInput = findViewById(R.id.layout_register_email);
         mPasswordInput = findViewById(R.id.layout_register_password);
         mPhoneInput = findViewById(R.id.layout_register_phone);
@@ -78,12 +75,13 @@ public class RegisterActivity extends AppCompatActivity {
         registerUser();
     }
 
+    //Helper function that allow user to register user using firebase authentication.
     public void registerUser(){
         final String username = mUserNameInput.getText().toString();
         final String email = mEmailInput.getText().toString();
         final String password = mPasswordInput.getText().toString();
         final String phone = mPhoneInput.getText().toString();
-
+        //Check if user enter valid information
         if(validName()&&validEmail()&&validPassword()&&validPhone()){
             mAuth.createUserWithEmailAndPassword(mEmailInput.getText().toString(), mPasswordInput.getText().toString())
                     .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
@@ -109,9 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             }
                                         });
 
-
                                 final DatabaseReference userDB = mDatabase.child(userId);
-
                                 if(mImageUri != null){
                                     final StorageReference filePath = mStorageRef.child(mImageUri.getLastPathSegment()+userId);
                                     filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -128,7 +124,6 @@ public class RegisterActivity extends AppCompatActivity {
                                                     userDB.child("Password").setValue(password);
                                                     userDB.child("Phone").setValue(phone);
                                                     userDB.child("Highest Score").setValue(0);
-
                                                     mAuth.signOut();
                                                 }
                                             });
@@ -146,6 +141,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
                                 Toast.makeText(RegisterActivity.this, "Account registered successfully",
                                         Toast.LENGTH_LONG).show();
+
 
                             } else {
                                 if (task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -222,6 +218,7 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
+    //Helper function that allow user to select profile image from gallery.
     public void selectProfileImg(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");

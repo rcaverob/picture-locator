@@ -28,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        //Initializing different widgets.
         mAuth = FirebaseAuth.getInstance();
         mEmailInput = findViewById(R.id.layout_sign_in_email);
         mPasswordInput = findViewById(R.id.layout_sign_in_password);
@@ -42,11 +43,11 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             case R.id.button_sign_up:
                 startActivity(new Intent(this, RegisterActivity.class));
-                finish();
         }
 
     }
 
+    //Helper function that allow user to login in via Firebase.
     private void validUserAccount(){
         if(validEmail() && validPassword()){
             progressBar.setVisibility(View.VISIBLE);
@@ -56,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             progressBar.setVisibility(View.GONE);
                             if(task.isSuccessful()){
+                                //Direct to the home page once user login.
                                 Intent home = new Intent(LoginActivity.this,MainActivity.class);
                                 startActivity(home);
                                 finish();
@@ -67,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
+    //Helper function that checks if user enter a valid email.
     private boolean validEmail() {
         String emailInput = mEmailInput.getText().toString().trim();
         if (emailInput.isEmpty()) {

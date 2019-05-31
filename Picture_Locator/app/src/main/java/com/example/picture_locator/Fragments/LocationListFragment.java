@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.picture_locator.Adapters.LocationListAdapter;
-import com.example.picture_locator.Models.QuizItem;
 import com.example.picture_locator.Models.Quizbank;
 import com.example.picture_locator.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,8 +19,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 
@@ -60,7 +57,7 @@ public class LocationListFragment extends ListFragment {
                 .child("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance()
                         .getCurrentUser()).getUid()).child(getString(R.string.archive_title));
 
-        // Get all Quizzes from the Archive
+        // Get all Quizzes from the Archive and add them to the list adapter
         userArchiveRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -68,7 +65,6 @@ public class LocationListFragment extends ListFragment {
                 for (DataSnapshot child : dataSnapshot.getChildren()){
                     Quizbank quiz = child.getValue(Quizbank.class);
                     mAdapter.add(quiz);
-                    Log.d(TAG, "onDataChange: Found Quiz: "+quiz.getUserName());
                 }
             }
             @Override

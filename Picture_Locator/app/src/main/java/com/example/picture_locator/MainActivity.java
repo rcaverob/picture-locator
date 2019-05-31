@@ -1,7 +1,6 @@
 package com.example.picture_locator;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +21,7 @@ import android.widget.TextView;
 
 import com.example.picture_locator.Fragments.LeaderBoardFragment;
 import com.example.picture_locator.Fragments.LocationListFragment;
+import com.example.picture_locator.Fragments.StartQuizFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Initializing different widgets.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().replace(R.id.flContent,new StartQuizFragment()).commit();
         mAuth = FirebaseAuth.getInstance();
+
+        //Direct user to login page if user haven't login.
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -71,14 +73,12 @@ public class MainActivity extends AppCompatActivity
                     startActivity(intent);
                     finish();
                 }
+                //Setting up the user profile on the home page by fetching the user information from firebase.
                 else{
-
                     mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
                     mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-
                             mUserInput.setText(dataSnapshot.child("Username").getValue(String.class));
                             mEmailInput.setText(dataSnapshot.child("Email").getValue(String.class));
                             String profileImgUri = dataSnapshot.child("Profile Image").getValue(String.class);
@@ -92,23 +92,18 @@ public class MainActivity extends AppCompatActivity
 
                         }
                     });
-
                 }
             }
         };
 
         mAuth.addAuthStateListener(mAuthListener);
-
         if(mAuth.getCurrentUser() == null){
             Log.d("FAB","mAuth.getCurrentUser is null");
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             startActivity(intent);
             finish();
         }
-
         mUserInput.setText("adb");
-
-
     }
 
     @Override
