@@ -6,7 +6,7 @@ Picture Locator is an android app that tests the user's ability to guess the loc
  ![MVC model](./MVC.png)
 
 - Each [activity](Picture_Locator/app/src/main/java/com/example/picture_locator) (Roughly corresponding to each Screen in the app) is implemented on its own Java class.
-- The [models](Picture_Locator/app/src/main/java/com/example/picture_locator/models) define the main classes of objects used in the app.
+- The [models](Picture_Locator/app/src/main/java/com/example/picture_locator/Models) define the main classes of objects used in the app.
 
 ### Technologies used:
 - Android Studio
