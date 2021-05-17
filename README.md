@@ -3,7 +3,7 @@ Picture Locator is an android app that tests the user's ability to guess the loc
 
 ### Code organization:
  MVC software design pattern
- ![MVC model](./img/mvc.png)
+ ![MVC model](./MVC.png)
 
 - Each [activity](Picture_Locator/app/src/main/java/com/example/picture_locator) (Roughly corresponding to each Screen in the app) is implemented on its own Java class.
 - The [models](./reducers) define the main classes of objects used in the app.
